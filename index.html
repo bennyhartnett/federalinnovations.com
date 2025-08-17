@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Interactive Blob</title>
+  <style>
+    /* Reset & layout */
+    html, body { height: 100%; }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: #ffffff;
+      overflow: hidden;
+      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    }
+
+    .title {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      color: #000000;
+      font-size: 28px;
+      font-weight: 700;
+      font-family: 'Arial Black', sans-serif;
+      letter-spacing: 1px;
+    }
+
+    canvas { display: block; width: 100vw; height: 100vh; touch-action: none; }
+  </style>
+</head>
+<body>
+  <div class="title">Federal Innovations</div>
+  <canvas id="blob-canvas" aria-label="Interactive blob animation"></canvas>
+
+  <script>
+    let canvas, ctx;
+    let render, init;
+    let blob;
+
+    class Blob {
+      constructor() {
+        this.points = [];
+      }
+
+      init() {
+        for (let i = 0; i < this.numPoints; i++) {
+          let point = new Point(this.divisional * (i + 1), this);
+          this.push(point);
+        }
+      }
+
+      render() {
+        let canvas = this.canvas;
+        let ctx = this.ctx;
+        let position = this.position;
+        let pointsArray = this.points;
+        let radius = this.radius;
+        let points = this.numPoints;
+        let divisional = this.divisional;
+        let center = this.center;
+
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        pointsArray[0].solveWith(pointsArray[points - 1], pointsArray[1]);
+
+        let p0 = pointsArray[points - 1].position;
+        let p1 = pointsArray[0].position;
+        let _p2 = p1;
+
+        ctx.beginPath();
+        ctx.moveTo(center.x, center.y);
+        ctx.moveTo((p0.x + p1.x) / 2, (p0.y + p1.y) / 2);
+
+        for (let i = 1; i < points; i++) {
+          pointsArray[i].solveWith(pointsArray[i - 1], pointsArray[i + 1] || pointsArray[0]);
+
+          let p2 = pointsArray[i].position;
+          var xc = (p1.x + p2.x) / 2;
+          var yc = (p1.y + p2.y) / 2;
+          ctx.quadraticCurveTo(p1.x, p1.y, xc, yc);
+
+          ctx.fillStyle = '#000000';
+          p1 = p2;
+        }
+
+        var xc = (p1.x + _p2.x) / 2;
+        var yc = (p1.y + _p2.y) / 2;
+        ctx.quadraticCurveTo(p1.x, p1.y, xc, yc);
+
+        ctx.fillStyle = this.color;
+        ctx.fill();
+        ctx.strokeStyle = '#000000';
+
+        requestAnimationFrame(this.render.bind(this));
+      }
+
+      push(item) {
+        if (item instanceof Point) {
+          this.points.push(item);
+        }
+      }
+
+      set color(value) { this._color = value; }
+      get color() { return this._color || '#000000'; }
+
+      set canvas(value) {
+        if (value instanceof HTMLElement && value.tagName.toLowerCase() === 'canvas') {
+          this._canvas = value;
+          this.ctx = this._canvas.getContext('2d');
+        }
+      }
+      get canvas() { return this._canvas; }
+
+      set numPoints(value) { if (value > 2) this._points = value; }
+      get numPoints() { return this._points || 32; }
+
+      set radius(value) { if (value > 0) this._radius = value; }
+      get radius() { return this._radius || 150; }
+
+      set position(value) { if (typeof value == 'object' && value.x != null && value.y != null) this._position = value; }
+      get position() { return this._position || { x: 0.5, y: 0.5 }; }
+
+      get divisional() { return Math.PI * 2 / this.numPoints; }
+
+      get center() { return { x: this.canvas.width * this.position.x, y: this.canvas.height * this.position.y }; }
+
+      set running(value) { this._running = value === true; }
+      get running() { return this._running !== false; }
+    }
+
+    class Point {
+      constructor(azimuth, parent) {
+        this.parent = parent;
+        this.azimuth = Math.PI - azimuth;
+        this._components = {
+          x: Math.cos(this.azimuth),
+          y: Math.sin(this.azimuth)
+        };
+
+        this.acceleration = -0.3 + Math.random() * 0.6;
+      }
+
+      solveWith(leftPoint, rightPoint) {
+        this.acceleration = (-0.3 * this.radialEffect + (leftPoint.radialEffect - this.radialEffect) + (rightPoint.radialEffect - this.radialEffect)) * this.elasticity - this.speed * this.friction;
+      }
+
+      set acceleration(value) {
+        if (typeof value == 'number') {
+          this._acceleration = value;
+          this.speed += this._acceleration * 2;
+        }
+      }
+      get acceleration() { return this._acceleration || 0; }
+
+      set speed(value) {
+        if (typeof value == 'number') {
+          this._speed = value;
+          this.radialEffect += this._speed * 5;
+        }
+      }
+      get speed() { return this._speed || 0; }
+
+      set radialEffect(value) { if (typeof value == 'number') this._radialEffect = value; }
+      get radialEffect() { return this._radialEffect || 0; }
+
+      get position() {
+        return {
+          x: this.parent.center.x + this.components.x * (this.parent.radius + this.radialEffect),
+          y: this.parent.center.y + this.components.y * (this.parent.radius + this.radialEffect)
+        }
+      }
+
+      get components() { return this._components; }
+
+      set elasticity(value) { if (typeof value === 'number') this._elasticity = value; }
+      get elasticity() { return this._elasticity || 0.001; }
+
+      set friction(value) { if (typeof value === 'number') this._frriction = value; }
+      get friction() { return this._frriction || 0.0085; }
+    }
+
+    blob = new Blob();
+
+    init = function () {
+      canvas = document.getElementById('blob-canvas');
+
+      // Ensure correct size and handle resizes
+      const resize = () => {
+        const dpr = Math.max(1, window.devicePixelRatio || 1);
+        canvas.width = Math.floor(window.innerWidth * dpr);
+        canvas.height = Math.floor(window.innerHeight * dpr);
+        canvas.style.width = window.innerWidth + 'px';
+        canvas.style.height = window.innerHeight + 'px';
+        const ctx = canvas.getContext('2d');
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      };
+      window.addEventListener('resize', resize);
+      resize();
+
+      let oldPointer = { x: 0, y: 0 };
+      let hover = false;
+
+      const onPointerMove = (e) => {
+        const rect = canvas.getBoundingClientRect();
+        const clientX = e.clientX != null ? e.clientX : (e.touches && e.touches[0] ? e.touches[0].clientX : 0);
+        const clientY = e.clientY != null ? e.clientY : (e.touches && e.touches[0] ? e.touches[0].clientY : 0);
+
+        let pos = blob.center;
+        let diff = { x: clientX - rect.left - pos.x, y: clientY - rect.top - pos.y };
+        let dist = Math.sqrt((diff.x * diff.x) + (diff.y * diff.y));
+        let angle = null;
+
+        blob.mousePos = { x: pos.x - (clientX - rect.left), y: pos.y - (clientY - rect.top) };
+
+        if (dist < blob.radius && hover === false) {
+          let vector = { x: (clientX - rect.left) - pos.x, y: (clientY - rect.top) - pos.y };
+          angle = Math.atan2(vector.y, vector.x);
+          hover = true;
+        } else if (dist > blob.radius && hover === true) {
+          let vector = { x: (clientX - rect.left) - pos.x, y: (clientY - rect.top) - pos.y };
+          angle = Math.atan2(vector.y, vector.x);
+          hover = false;
+          blob.color = null;
+        }
+
+        if (typeof angle == 'number') {
+          let nearestPoint = null;
+          let distanceFromPoint = 100;
+
+          blob.points.forEach((point) => {
+            if (Math.abs(angle - point.azimuth) < distanceFromPoint) {
+              nearestPoint = point;
+              distanceFromPoint = Math.abs(angle - point.azimuth);
+            }
+          });
+
+          if (nearestPoint) {
+            let strength = { x: oldPointer.x - clientX, y: oldPointer.y - clientY };
+            strength = Math.sqrt((strength.x * strength.x) + (strength.y * strength.y)) * 10;
+            if (strength > 100) strength = 100;
+            nearestPoint.acceleration = strength / 100 * (hover ? -1 : 1);
+          }
+        }
+
+        oldPointer.x = clientX;
+        oldPointer.y = clientY;
+      };
+
+      window.addEventListener('pointermove', onPointerMove, { passive: true });
+
+      blob.canvas = canvas;
+      blob.numPoints = 32;
+      blob.radius = 150;
+      blob.position = { x: 0.5, y: 0.5 };
+      blob.color = '#000000';
+
+      blob.init();
+      blob.render();
+    };
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', init);
+    } else {
+      init();
+    }
+  </script>
+</body>
+</html>
