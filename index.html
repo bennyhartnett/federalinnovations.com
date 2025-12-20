@@ -36,11 +36,28 @@
             0%, 100% { transform: translateY(0px); }
             50% { transform: translateY(-10px); }
         }
+        @keyframes drift {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            25% { transform: translate(10px, -10px) rotate(1deg); }
+            50% { transform: translate(-5px, 5px) rotate(-1deg); }
+            75% { transform: translate(-10px, -5px) rotate(0.5deg); }
+        }
+        @keyframes particle-float {
+            0%, 100% { transform: translateY(0) translateX(0) scale(1); opacity: 0.3; }
+            50% { transform: translateY(-20px) translateX(10px) scale(1.1); opacity: 0.6; }
+        }
+        @keyframes shimmer {
+            0% { background-position: -200% center; }
+            100% { background-position: 200% center; }
+        }
         .animate-pulse-glow {
             animation: pulse-glow 3s ease-in-out infinite;
         }
         .animate-float {
             animation: float 6s ease-in-out infinite;
+        }
+        .animate-drift {
+            animation: drift 20s ease-in-out infinite;
         }
         .gradient-text {
             background: linear-gradient(135deg, #ffffff 0%, #a3a3a3 100%);
@@ -51,15 +68,94 @@
         .glow-line {
             background: linear-gradient(90deg, transparent, #f97316, transparent);
         }
+        /* Parallax Layer Styles */
+        .parallax-container {
+            perspective: 1000px;
+            transform-style: preserve-3d;
+        }
+        .parallax-layer {
+            will-change: transform;
+            transition: transform 0.1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        .parallax-slow { --parallax-speed: 0.3; }
+        .parallax-medium { --parallax-speed: 0.5; }
+        .parallax-fast { --parallax-speed: 0.8; }
+        /* Floating Particles */
+        .particle {
+            position: fixed;
+            border-radius: 50%;
+            pointer-events: none;
+            animation: particle-float 8s ease-in-out infinite;
+        }
+        /* Enhanced Card Effects */
+        .parallax-card {
+            transform-style: preserve-3d;
+            transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                        box-shadow 0.4s ease;
+        }
+        .parallax-card:hover {
+            transform: translateY(-8px) rotateX(2deg) rotateY(-2deg);
+            box-shadow: 0 25px 50px -12px rgba(249, 115, 22, 0.15);
+        }
+        /* Hero Text 3D Effect */
+        .hero-title {
+            transform-style: preserve-3d;
+        }
+        .hero-title span {
+            display: inline-block;
+            transition: transform 0.3s ease;
+        }
+        /* Shimmer Effect on Accent */
+        .shimmer-line {
+            background: linear-gradient(90deg, transparent 0%, transparent 40%, #f97316 50%, transparent 60%, transparent 100%);
+            background-size: 200% 100%;
+            animation: shimmer 3s ease-in-out infinite;
+        }
+        /* Scroll Reveal Animations */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .reveal-delay-1 { transition-delay: 0.1s; }
+        .reveal-delay-2 { transition-delay: 0.2s; }
+        .reveal-delay-3 { transition-delay: 0.3s; }
+        /* Mouse Glow Effect */
+        .mouse-glow {
+            position: fixed;
+            width: 400px;
+            height: 400px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(249, 115, 22, 0.08) 0%, transparent 70%);
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            z-index: 1;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        body:hover .mouse-glow {
+            opacity: 1;
+        }
     </style>
 </head>
 <body class="bg-fi-black min-h-screen font-sans antialiased overflow-x-hidden">
-    <!-- Subtle grid background -->
-    <div class="fixed inset-0 opacity-[0.02]" style="background-image: linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px); background-size: 50px 50px;"></div>
+    <!-- Mouse glow effect -->
+    <div class="mouse-glow" id="mouseGlow"></div>
 
-    <!-- Gradient orb effects -->
-    <div class="fixed top-1/4 -left-32 w-96 h-96 bg-fi-accent/10 rounded-full blur-[128px] animate-pulse-glow"></div>
-    <div class="fixed bottom-1/4 -right-32 w-96 h-96 bg-orange-500/5 rounded-full blur-[128px] animate-pulse-glow" style="animation-delay: 1.5s;"></div>
+    <!-- Subtle grid background with parallax -->
+    <div class="fixed inset-0 opacity-[0.02] parallax-layer parallax-slow" id="gridBg" style="background-image: linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px); background-size: 50px 50px;"></div>
+
+    <!-- Floating particles layer -->
+    <div id="particles" class="fixed inset-0 pointer-events-none overflow-hidden z-0"></div>
+
+    <!-- Gradient orb effects with parallax -->
+    <div class="fixed top-1/4 -left-32 w-96 h-96 bg-fi-accent/10 rounded-full blur-[128px] animate-pulse-glow animate-drift parallax-layer" id="orb1" data-parallax-speed="0.4"></div>
+    <div class="fixed bottom-1/4 -right-32 w-96 h-96 bg-orange-500/5 rounded-full blur-[128px] animate-pulse-glow animate-drift parallax-layer" id="orb2" data-parallax-speed="0.2" style="animation-delay: 1.5s;"></div>
+    <div class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-fi-accent/5 rounded-full blur-[200px] parallax-layer" id="orb3" data-parallax-speed="0.15"></div>
 
     <div class="relative z-10 min-h-screen flex flex-col">
         <!-- Header -->
@@ -80,33 +176,33 @@
         </header>
 
         <!-- Main content -->
-        <main class="flex-1 flex flex-col items-center justify-center px-6 md:px-12 lg:px-20 py-12">
+        <main class="flex-1 flex flex-col items-center justify-center px-6 md:px-12 lg:px-20 py-12 parallax-container">
             <div class="max-w-4xl mx-auto text-center">
                 <!-- Status badge -->
-                <div class="inline-flex items-center space-x-2 bg-fi-gray/50 border border-white/10 rounded-full px-4 py-2 mb-8 backdrop-blur-sm">
+                <div class="reveal inline-flex items-center space-x-2 bg-fi-gray/50 border border-white/10 rounded-full px-4 py-2 mb-8 backdrop-blur-sm parallax-layer" data-parallax-speed="0.6">
                     <span class="w-2 h-2 bg-fi-accent rounded-full animate-pulse"></span>
                     <span class="text-sm text-neutral-400 font-medium tracking-wide uppercase">In Development</span>
                 </div>
 
                 <!-- Main heading -->
-                <h1 class="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight mb-6">
+                <h1 class="hero-title text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight mb-6 reveal reveal-delay-1 parallax-layer" data-parallax-speed="0.8" id="heroTitle">
                     <span class="gradient-text">Coming</span>
                     <br>
                     <span class="text-white">Soon</span>
                 </h1>
 
-                <!-- Accent line -->
-                <div class="w-24 h-1 glow-line mx-auto mb-8 rounded-full"></div>
+                <!-- Accent line with shimmer -->
+                <div class="w-24 h-1 glow-line shimmer-line mx-auto mb-8 rounded-full reveal reveal-delay-2"></div>
 
                 <!-- Subheading -->
-                <p class="text-lg md:text-xl text-neutral-400 max-w-2xl mx-auto mb-12 leading-relaxed">
+                <p class="text-lg md:text-xl text-neutral-400 max-w-2xl mx-auto mb-12 leading-relaxed reveal reveal-delay-2 parallax-layer" data-parallax-speed="0.5">
                     Strategic consulting and staffing solutions for government contractors.
                     <span class="text-neutral-300">Accelerating growth in the federal marketplace.</span>
                 </p>
 
                 <!-- Feature hints -->
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16 max-w-3xl mx-auto">
-                    <div class="group p-6 bg-fi-gray/30 border border-white/5 rounded-2xl backdrop-blur-sm hover:border-fi-accent/30 transition-all duration-300">
+                    <div class="parallax-card reveal reveal-delay-1 group p-6 bg-fi-gray/30 border border-white/5 rounded-2xl backdrop-blur-sm hover:border-fi-accent/30 transition-all duration-300" data-tilt>
                         <div class="w-12 h-12 bg-fi-dark rounded-xl flex items-center justify-center mb-4 mx-auto group-hover:bg-fi-accent/10 transition-colors duration-300">
                             <svg class="w-6 h-6 text-fi-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
@@ -116,7 +212,7 @@
                         <p class="text-neutral-500 text-sm">Strategic advisory for SBIR awards and gov con acquisitions</p>
                     </div>
 
-                    <div class="group p-6 bg-fi-gray/30 border border-white/5 rounded-2xl backdrop-blur-sm hover:border-fi-accent/30 transition-all duration-300">
+                    <div class="parallax-card reveal reveal-delay-2 group p-6 bg-fi-gray/30 border border-white/5 rounded-2xl backdrop-blur-sm hover:border-fi-accent/30 transition-all duration-300" data-tilt>
                         <div class="w-12 h-12 bg-fi-dark rounded-xl flex items-center justify-center mb-4 mx-auto group-hover:bg-fi-accent/10 transition-colors duration-300">
                             <svg class="w-6 h-6 text-fi-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
@@ -126,7 +222,7 @@
                         <p class="text-neutral-500 text-sm">AI strategy and implementation for federal contractors</p>
                     </div>
 
-                    <div class="group p-6 bg-fi-gray/30 border border-white/5 rounded-2xl backdrop-blur-sm hover:border-fi-accent/30 transition-all duration-300">
+                    <div class="parallax-card reveal reveal-delay-3 group p-6 bg-fi-gray/30 border border-white/5 rounded-2xl backdrop-blur-sm hover:border-fi-accent/30 transition-all duration-300" data-tilt>
                         <div class="w-12 h-12 bg-fi-dark rounded-xl flex items-center justify-center mb-4 mx-auto group-hover:bg-fi-accent/10 transition-colors duration-300">
                             <svg class="w-6 h-6 text-fi-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
@@ -171,5 +267,211 @@
             </div>
         </footer>
     </div>
+
+    <!-- Advanced Parallax JavaScript -->
+    <script>
+        (function() {
+            'use strict';
+
+            // Configuration
+            const config = {
+                particleCount: 15,
+                mouseParallaxIntensity: 30,
+                scrollParallaxIntensity: 0.5,
+                smoothing: 0.1
+            };
+
+            // State
+            let mouseX = 0, mouseY = 0;
+            let currentMouseX = 0, currentMouseY = 0;
+            let scrollY = 0;
+            let ticking = false;
+
+            // Elements
+            const mouseGlow = document.getElementById('mouseGlow');
+            const orb1 = document.getElementById('orb1');
+            const orb2 = document.getElementById('orb2');
+            const orb3 = document.getElementById('orb3');
+            const gridBg = document.getElementById('gridBg');
+            const heroTitle = document.getElementById('heroTitle');
+            const particlesContainer = document.getElementById('particles');
+            const parallaxLayers = document.querySelectorAll('.parallax-layer');
+            const revealElements = document.querySelectorAll('.reveal');
+            const tiltCards = document.querySelectorAll('[data-tilt]');
+
+            // Create floating particles
+            function createParticles() {
+                for (let i = 0; i < config.particleCount; i++) {
+                    const particle = document.createElement('div');
+                    particle.className = 'particle';
+                    const size = Math.random() * 4 + 2;
+                    const x = Math.random() * 100;
+                    const y = Math.random() * 100;
+                    const delay = Math.random() * 8;
+                    const duration = 8 + Math.random() * 4;
+                    const opacity = Math.random() * 0.3 + 0.1;
+
+                    particle.style.cssText = `
+                        width: ${size}px;
+                        height: ${size}px;
+                        left: ${x}%;
+                        top: ${y}%;
+                        background: rgba(249, 115, 22, ${opacity});
+                        animation-delay: ${delay}s;
+                        animation-duration: ${duration}s;
+                        box-shadow: 0 0 ${size * 2}px rgba(249, 115, 22, ${opacity});
+                    `;
+                    particlesContainer.appendChild(particle);
+                }
+            }
+
+            // Smooth lerp function
+            function lerp(start, end, factor) {
+                return start + (end - start) * factor;
+            }
+
+            // Handle mouse movement
+            function handleMouseMove(e) {
+                mouseX = e.clientX;
+                mouseY = e.clientY;
+            }
+
+            // Handle scroll
+            function handleScroll() {
+                scrollY = window.pageYOffset;
+                if (!ticking) {
+                    requestAnimationFrame(updateScrollParallax);
+                    ticking = true;
+                }
+            }
+
+            // Update scroll-based parallax
+            function updateScrollParallax() {
+                const scrollFactor = scrollY * config.scrollParallaxIntensity;
+
+                // Move orbs based on scroll
+                if (orb1) orb1.style.transform = `translateY(${scrollFactor * 0.4}px)`;
+                if (orb2) orb2.style.transform = `translateY(${scrollFactor * -0.2}px)`;
+                if (orb3) orb3.style.transform = `translate(-50%, calc(-50% + ${scrollFactor * 0.15}px))`;
+
+                // Move grid background
+                if (gridBg) gridBg.style.transform = `translateY(${scrollFactor * 0.1}px)`;
+
+                // Update reveal elements
+                revealElements.forEach((el) => {
+                    const rect = el.getBoundingClientRect();
+                    const windowHeight = window.innerHeight;
+                    if (rect.top < windowHeight * 0.85) {
+                        el.classList.add('active');
+                    }
+                });
+
+                ticking = false;
+            }
+
+            // Update mouse-based parallax (runs on animation frame)
+            function updateMouseParallax() {
+                // Smooth mouse movement
+                currentMouseX = lerp(currentMouseX, mouseX, config.smoothing);
+                currentMouseY = lerp(currentMouseY, mouseY, config.smoothing);
+
+                // Calculate offset from center
+                const centerX = window.innerWidth / 2;
+                const centerY = window.innerHeight / 2;
+                const offsetX = (currentMouseX - centerX) / centerX;
+                const offsetY = (currentMouseY - centerY) / centerY;
+
+                // Update mouse glow position
+                if (mouseGlow) {
+                    mouseGlow.style.left = `${currentMouseX}px`;
+                    mouseGlow.style.top = `${currentMouseY}px`;
+                }
+
+                // Apply mouse parallax to orbs
+                const intensity = config.mouseParallaxIntensity;
+                if (orb1) {
+                    const scrollOffset = scrollY * config.scrollParallaxIntensity * 0.4;
+                    orb1.style.transform = `translate(${offsetX * intensity * 0.8}px, ${offsetY * intensity * 0.8 + scrollOffset}px)`;
+                }
+                if (orb2) {
+                    const scrollOffset = scrollY * config.scrollParallaxIntensity * -0.2;
+                    orb2.style.transform = `translate(${offsetX * intensity * -0.5}px, ${offsetY * intensity * -0.5 + scrollOffset}px)`;
+                }
+                if (orb3) {
+                    const scrollOffset = scrollY * config.scrollParallaxIntensity * 0.15;
+                    orb3.style.transform = `translate(calc(-50% + ${offsetX * intensity * 0.3}px), calc(-50% + ${offsetY * intensity * 0.3 + scrollOffset}px))`;
+                }
+
+                // Apply subtle parallax to hero title
+                if (heroTitle) {
+                    heroTitle.style.transform = `translate(${offsetX * 5}px, ${offsetY * 5}px)`;
+                }
+
+                // Apply parallax to all parallax layers based on data attribute
+                parallaxLayers.forEach((layer) => {
+                    const speed = parseFloat(layer.dataset.parallaxSpeed) || 0.5;
+                    if (layer !== orb1 && layer !== orb2 && layer !== orb3 && layer !== heroTitle) {
+                        layer.style.transform = `translate(${offsetX * intensity * speed * 0.3}px, ${offsetY * intensity * speed * 0.3}px)`;
+                    }
+                });
+
+                requestAnimationFrame(updateMouseParallax);
+            }
+
+            // Initialize 3D tilt effect for cards
+            function initTiltEffect() {
+                tiltCards.forEach((card) => {
+                    card.addEventListener('mousemove', (e) => {
+                        const rect = card.getBoundingClientRect();
+                        const x = e.clientX - rect.left;
+                        const y = e.clientY - rect.top;
+                        const centerX = rect.width / 2;
+                        const centerY = rect.height / 2;
+                        const rotateX = (y - centerY) / centerY * -8;
+                        const rotateY = (x - centerX) / centerX * 8;
+
+                        card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateZ(10px)`;
+                    });
+
+                    card.addEventListener('mouseleave', () => {
+                        card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) translateZ(0)';
+                    });
+                });
+            }
+
+            // Initialize
+            function init() {
+                createParticles();
+                initTiltEffect();
+
+                // Event listeners
+                document.addEventListener('mousemove', handleMouseMove);
+                window.addEventListener('scroll', handleScroll, { passive: true });
+
+                // Start animation loops
+                requestAnimationFrame(updateMouseParallax);
+
+                // Initial scroll check for reveals
+                handleScroll();
+
+                // Trigger initial reveal after small delay
+                setTimeout(() => {
+                    revealElements.forEach((el) => {
+                        const rect = el.getBoundingClientRect();
+                        if (rect.top < window.innerHeight) {
+                            el.classList.add('active');
+                        }
+                    });
+                }, 100);
+            }
+
+            // Run when DOM is ready
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', init);
+            } else {
+                init();
+            }
+        })();
+    </script>
 </body>
 </html>
