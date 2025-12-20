@@ -27,6 +27,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <style>
         @keyframes pulse-glow {
             0%, 100% { opacity: 0.4; }
@@ -143,6 +144,9 @@
     </style>
 </head>
 <body class="bg-fi-black min-h-screen font-sans antialiased overflow-x-hidden">
+    <!-- Three.js canvas background -->
+    <canvas id="threeCanvas" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none;"></canvas>
+
     <!-- Mouse glow effect -->
     <div class="mouse-glow" id="mouseGlow"></div>
 
@@ -471,6 +475,201 @@
             } else {
                 init();
             }
+        })();
+
+        // Three.js Interactive Background
+        (function() {
+            'use strict';
+
+            const canvas = document.getElementById('threeCanvas');
+            if (!canvas || typeof THREE === 'undefined') return;
+
+            // Scene setup
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            const renderer = new THREE.WebGLRenderer({
+                canvas: canvas,
+                alpha: true,
+                antialias: true
+            });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            renderer.setClearColor(0x000000, 0);
+
+            // Configuration
+            const config = {
+                particleCount: 150,
+                particleSize: 2,
+                baseOpacity: 0.15,
+                connectionDistance: 120,
+                mouseInfluence: 80,
+                mouseRadius: 200,
+                depth: 400
+            };
+
+            // Mouse tracking
+            let targetMouseX = 0, targetMouseY = 0;
+            let smoothMouseX = 0, smoothMouseY = 0;
+
+            // Create particles
+            const particlesGeometry = new THREE.BufferGeometry();
+            const particleCount = config.particleCount;
+            const positions = new Float32Array(particleCount * 3);
+            const velocities = new Float32Array(particleCount * 3);
+            const originalPositions = new Float32Array(particleCount * 3);
+
+            for (let i = 0; i < particleCount; i++) {
+                const i3 = i * 3;
+                positions[i3] = (Math.random() - 0.5) * window.innerWidth;
+                positions[i3 + 1] = (Math.random() - 0.5) * window.innerHeight;
+                positions[i3 + 2] = (Math.random() - 0.5) * config.depth;
+
+                originalPositions[i3] = positions[i3];
+                originalPositions[i3 + 1] = positions[i3 + 1];
+                originalPositions[i3 + 2] = positions[i3 + 2];
+
+                velocities[i3] = (Math.random() - 0.5) * 0.3;
+                velocities[i3 + 1] = (Math.random() - 0.5) * 0.3;
+                velocities[i3 + 2] = (Math.random() - 0.5) * 0.1;
+            }
+
+            particlesGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+
+            // Particle material with accent color
+            const particlesMaterial = new THREE.PointsMaterial({
+                color: 0xf97316,
+                size: config.particleSize,
+                transparent: true,
+                opacity: config.baseOpacity,
+                blending: THREE.AdditiveBlending,
+                sizeAttenuation: true
+            });
+
+            const particles = new THREE.Points(particlesGeometry, particlesMaterial);
+            scene.add(particles);
+
+            // Connection lines
+            const linesMaterial = new THREE.LineBasicMaterial({
+                color: 0xf97316,
+                transparent: true,
+                opacity: 0.05,
+                blending: THREE.AdditiveBlending
+            });
+
+            let linesGeometry = new THREE.BufferGeometry();
+            let lines = new THREE.LineSegments(linesGeometry, linesMaterial);
+            scene.add(lines);
+
+            // Camera position
+            camera.position.z = 400;
+
+            // Mouse move handler
+            function onMouseMove(e) {
+                targetMouseX = (e.clientX - window.innerWidth / 2);
+                targetMouseY = -(e.clientY - window.innerHeight / 2);
+            }
+
+            // Resize handler
+            function onResize() {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            }
+
+            // Update connections between nearby particles
+            function updateConnections() {
+                const positions = particlesGeometry.attributes.position.array;
+                const linePositions = [];
+
+                for (let i = 0; i < particleCount; i++) {
+                    const i3 = i * 3;
+                    for (let j = i + 1; j < particleCount; j++) {
+                        const j3 = j * 3;
+                        const dx = positions[i3] - positions[j3];
+                        const dy = positions[i3 + 1] - positions[j3 + 1];
+                        const dz = positions[i3 + 2] - positions[j3 + 2];
+                        const dist = Math.sqrt(dx * dx + dy * dy + dz * dz);
+
+                        if (dist < config.connectionDistance) {
+                            linePositions.push(
+                                positions[i3], positions[i3 + 1], positions[i3 + 2],
+                                positions[j3], positions[j3 + 1], positions[j3 + 2]
+                            );
+                        }
+                    }
+                }
+
+                linesGeometry.dispose();
+                linesGeometry = new THREE.BufferGeometry();
+                linesGeometry.setAttribute('position', new THREE.Float32BufferAttribute(linePositions, 3));
+                lines.geometry = linesGeometry;
+            }
+
+            // Animation loop
+            function animate() {
+                requestAnimationFrame(animate);
+
+                // Smooth mouse movement
+                smoothMouseX += (targetMouseX - smoothMouseX) * 0.05;
+                smoothMouseY += (targetMouseY - smoothMouseY) * 0.05;
+
+                const positions = particlesGeometry.attributes.position.array;
+
+                // Update particle positions
+                for (let i = 0; i < particleCount; i++) {
+                    const i3 = i * 3;
+
+                    // Apply velocity for gentle drift
+                    positions[i3] += velocities[i3];
+                    positions[i3 + 1] += velocities[i3 + 1];
+                    positions[i3 + 2] += velocities[i3 + 2];
+
+                    // Mouse influence - push particles away from cursor
+                    const dx = positions[i3] - smoothMouseX;
+                    const dy = positions[i3 + 1] - smoothMouseY;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+
+                    if (dist < config.mouseRadius && dist > 0) {
+                        const force = (config.mouseRadius - dist) / config.mouseRadius;
+                        const angle = Math.atan2(dy, dx);
+                        positions[i3] += Math.cos(angle) * force * config.mouseInfluence * 0.02;
+                        positions[i3 + 1] += Math.sin(angle) * force * config.mouseInfluence * 0.02;
+                    }
+
+                    // Wrap around edges
+                    const halfWidth = window.innerWidth / 2;
+                    const halfHeight = window.innerHeight / 2;
+                    const halfDepth = config.depth / 2;
+
+                    if (positions[i3] > halfWidth) positions[i3] = -halfWidth;
+                    if (positions[i3] < -halfWidth) positions[i3] = halfWidth;
+                    if (positions[i3 + 1] > halfHeight) positions[i3 + 1] = -halfHeight;
+                    if (positions[i3 + 1] < -halfHeight) positions[i3 + 1] = halfHeight;
+                    if (positions[i3 + 2] > halfDepth) positions[i3 + 2] = -halfDepth;
+                    if (positions[i3 + 2] < -halfDepth) positions[i3 + 2] = halfDepth;
+                }
+
+                particlesGeometry.attributes.position.needsUpdate = true;
+
+                // Update connections every few frames for performance
+                if (Math.random() < 0.3) {
+                    updateConnections();
+                }
+
+                // Subtle camera movement based on mouse
+                camera.position.x += (smoothMouseX * 0.02 - camera.position.x) * 0.02;
+                camera.position.y += (smoothMouseY * 0.02 - camera.position.y) * 0.02;
+                camera.lookAt(scene.position);
+
+                renderer.render(scene, camera);
+            }
+
+            // Event listeners
+            document.addEventListener('mousemove', onMouseMove);
+            window.addEventListener('resize', onResize);
+
+            // Start animation
+            animate();
         })();
     </script>
 </body>
