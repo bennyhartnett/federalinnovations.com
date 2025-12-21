@@ -496,20 +496,29 @@
             renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
             renderer.setClearColor(0x000000, 0);
 
-            // Configuration
+            // Configuration - enhanced for smoother animation
             const config = {
                 particleCount: 200,
                 particleSize: 3,
                 baseOpacity: 0.4,
                 connectionDistance: 150,
-                mouseInfluence: 100,
+                mouseInfluence: 80,  // Reduced for smoother mouse response
                 mouseRadius: 250,
-                depth: 400
+                depth: 400,
+                smoothingFactor: 0.03,  // Lower = smoother (was 0.05)
+                scrollInfluence: 0.15,  // How much scroll affects the scene
+                cameraSmoothing: 0.015  // Smoother camera movement
             };
 
-            // Mouse tracking
+            // Mouse tracking with smoother interpolation
             let targetMouseX = 0, targetMouseY = 0;
             let smoothMouseX = 0, smoothMouseY = 0;
+
+            // Scroll tracking
+            let targetScrollY = 0;
+            let smoothScrollY = 0;
+            let lastScrollY = 0;
+            let scrollVelocity = 0;
 
             // Create particles
             const particlesGeometry = new THREE.BufferGeometry();
@@ -528,9 +537,10 @@
                 originalPositions[i3 + 1] = positions[i3 + 1];
                 originalPositions[i3 + 2] = positions[i3 + 2];
 
-                velocities[i3] = (Math.random() - 0.5) * 0.3;
-                velocities[i3 + 1] = (Math.random() - 0.5) * 0.3;
-                velocities[i3 + 2] = (Math.random() - 0.5) * 0.1;
+                // Slower base velocities for smoother drift
+                velocities[i3] = (Math.random() - 0.5) * 0.15;
+                velocities[i3 + 1] = (Math.random() - 0.5) * 0.15;
+                velocities[i3 + 2] = (Math.random() - 0.5) * 0.05;
             }
 
             particlesGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
@@ -563,10 +573,22 @@
             // Camera position
             camera.position.z = 400;
 
+            // Smooth lerp function
+            function lerp(start, end, factor) {
+                return start + (end - start) * factor;
+            }
+
             // Mouse move handler
             function onMouseMove(e) {
                 targetMouseX = (e.clientX - window.innerWidth / 2);
                 targetMouseY = -(e.clientY - window.innerHeight / 2);
+            }
+
+            // Scroll handler
+            function onScroll() {
+                targetScrollY = window.pageYOffset;
+                scrollVelocity = targetScrollY - lastScrollY;
+                lastScrollY = targetScrollY;
             }
 
             // Resize handler
@@ -576,8 +598,13 @@
                 renderer.setSize(window.innerWidth, window.innerHeight);
             }
 
-            // Update connections between nearby particles
+            // Update connections between nearby particles (throttled)
+            let connectionFrame = 0;
             function updateConnections() {
+                connectionFrame++;
+                // Only update every 5 frames for performance and smoother appearance
+                if (connectionFrame % 5 !== 0) return;
+
                 const positions = particlesGeometry.attributes.position.array;
                 const linePositions = [];
 
@@ -609,31 +636,46 @@
             function animate() {
                 requestAnimationFrame(animate);
 
-                // Smooth mouse movement
-                smoothMouseX += (targetMouseX - smoothMouseX) * 0.05;
-                smoothMouseY += (targetMouseY - smoothMouseY) * 0.05;
+                // Smooth mouse movement with lower factor for buttery animation
+                smoothMouseX = lerp(smoothMouseX, targetMouseX, config.smoothingFactor);
+                smoothMouseY = lerp(smoothMouseY, targetMouseY, config.smoothingFactor);
+
+                // Smooth scroll with damping
+                smoothScrollY = lerp(smoothScrollY, targetScrollY, config.smoothingFactor * 1.5);
+                // Decay scroll velocity for smooth stop
+                scrollVelocity *= 0.95;
 
                 const positions = particlesGeometry.attributes.position.array;
+
+                // Calculate scroll-based offsets
+                const scrollOffset = smoothScrollY * config.scrollInfluence;
+                const scrollRotation = smoothScrollY * 0.0003;
 
                 // Update particle positions
                 for (let i = 0; i < particleCount; i++) {
                     const i3 = i * 3;
 
-                    // Apply velocity for gentle drift
+                    // Apply velocity for gentle drift (reduced for smoothness)
                     positions[i3] += velocities[i3];
                     positions[i3 + 1] += velocities[i3 + 1];
                     positions[i3 + 2] += velocities[i3 + 2];
 
-                    // Mouse influence - push particles away from cursor
+                    // Scroll influence - particles drift based on scroll with parallax depth
+                    const depthFactor = (positions[i3 + 2] + config.depth / 2) / config.depth;
+                    positions[i3 + 1] -= scrollVelocity * 0.02 * (0.5 + depthFactor * 0.5);
+
+                    // Mouse influence - push particles away from cursor (smoother)
                     const dx = positions[i3] - smoothMouseX;
                     const dy = positions[i3 + 1] - smoothMouseY;
                     const dist = Math.sqrt(dx * dx + dy * dy);
 
                     if (dist < config.mouseRadius && dist > 0) {
                         const force = (config.mouseRadius - dist) / config.mouseRadius;
+                        // Cubic easing for smoother falloff
+                        const easedForce = force * force * (3 - 2 * force);
                         const angle = Math.atan2(dy, dx);
-                        positions[i3] += Math.cos(angle) * force * config.mouseInfluence * 0.02;
-                        positions[i3 + 1] += Math.sin(angle) * force * config.mouseInfluence * 0.02;
+                        positions[i3] += Math.cos(angle) * easedForce * config.mouseInfluence * 0.012;
+                        positions[i3 + 1] += Math.sin(angle) * easedForce * config.mouseInfluence * 0.012;
                     }
 
                     // Wrap around edges
@@ -651,21 +693,34 @@
 
                 particlesGeometry.attributes.position.needsUpdate = true;
 
-                // Update connections every few frames for performance
-                if (Math.random() < 0.3) {
-                    updateConnections();
-                }
+                // Update connections (throttled internally)
+                updateConnections();
 
-                // Subtle camera movement based on mouse
-                camera.position.x += (smoothMouseX * 0.02 - camera.position.x) * 0.02;
-                camera.position.y += (smoothMouseY * 0.02 - camera.position.y) * 0.02;
+                // Smooth camera movement based on mouse and scroll
+                const targetCamX = smoothMouseX * 0.015;
+                const targetCamY = smoothMouseY * 0.015 - scrollOffset * 0.3;
+                const targetCamZ = 400 + scrollOffset * 0.5;
+
+                camera.position.x = lerp(camera.position.x, targetCamX, config.cameraSmoothing);
+                camera.position.y = lerp(camera.position.y, targetCamY, config.cameraSmoothing);
+                camera.position.z = lerp(camera.position.z, targetCamZ, config.cameraSmoothing);
+
+                // Subtle rotation based on scroll
+                camera.rotation.x = lerp(camera.rotation.x, scrollRotation, config.cameraSmoothing);
                 camera.lookAt(scene.position);
+
+                // Rotate entire particle system slightly based on scroll for depth
+                particles.rotation.y = lerp(particles.rotation.y, scrollRotation * 0.5, config.cameraSmoothing);
+                particles.rotation.x = lerp(particles.rotation.x, scrollRotation * 0.3, config.cameraSmoothing);
+                lines.rotation.y = particles.rotation.y;
+                lines.rotation.x = particles.rotation.x;
 
                 renderer.render(scene, camera);
             }
 
             // Event listeners
-            document.addEventListener('mousemove', onMouseMove);
+            document.addEventListener('mousemove', onMouseMove, { passive: true });
+            window.addEventListener('scroll', onScroll, { passive: true });
             window.addEventListener('resize', onResize);
 
             // Start animation
