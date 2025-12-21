@@ -507,8 +507,19 @@
                 depth: 400,
                 smoothingFactor: 0.03,  // Lower = smoother (was 0.05)
                 scrollInfluence: 0.15,  // How much scroll affects the scene
-                cameraSmoothing: 0.015  // Smoother camera movement
+                cameraSmoothing: 0.015,  // Smoother camera movement
+                colorTransitionSpeed: 0.0008  // Speed of color cycling
             };
+
+            // Color palette for smooth transitions: purple, blue, gold
+            const colorPalette = [
+                new THREE.Color(0x8b5cf6),  // Purple
+                new THREE.Color(0x3b82f6),  // Blue
+                new THREE.Color(0xf59e0b)   // Gold
+            ];
+            let colorIndex = 0;
+            let colorProgress = 0;
+            const currentColor = new THREE.Color(colorPalette[0]);
 
             // Mouse tracking with smoother interpolation
             let targetMouseX = 0, targetMouseY = 0;
@@ -545,9 +556,9 @@
 
             particlesGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
 
-            // Particle material with accent color
+            // Particle material with animated color
             const particlesMaterial = new THREE.PointsMaterial({
-                color: 0xf97316,
+                color: currentColor,
                 size: config.particleSize,
                 transparent: true,
                 opacity: config.baseOpacity,
@@ -558,9 +569,9 @@
             const particles = new THREE.Points(particlesGeometry, particlesMaterial);
             scene.add(particles);
 
-            // Connection lines
+            // Connection lines with animated color
             const linesMaterial = new THREE.LineBasicMaterial({
-                color: 0xf97316,
+                color: currentColor,
                 transparent: true,
                 opacity: 0.15,
                 blending: THREE.AdditiveBlending
@@ -644,6 +655,17 @@
                 smoothScrollY = lerp(smoothScrollY, targetScrollY, config.smoothingFactor * 1.5);
                 // Decay scroll velocity for smooth stop
                 scrollVelocity *= 0.95;
+
+                // Smooth color transition between purple, blue, and gold
+                colorProgress += config.colorTransitionSpeed;
+                if (colorProgress >= 1) {
+                    colorProgress = 0;
+                    colorIndex = (colorIndex + 1) % colorPalette.length;
+                }
+                const nextColorIndex = (colorIndex + 1) % colorPalette.length;
+                currentColor.lerpColors(colorPalette[colorIndex], colorPalette[nextColorIndex], colorProgress);
+                particlesMaterial.color.copy(currentColor);
+                linesMaterial.color.copy(currentColor);
 
                 const positions = particlesGeometry.attributes.position.array;
 
