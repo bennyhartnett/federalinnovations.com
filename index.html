@@ -29,6 +29,13 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <style>
+        :root {
+            --dynamic-r: 249;
+            --dynamic-g: 115;
+            --dynamic-b: 22;
+            --dynamic-color: rgb(var(--dynamic-r), var(--dynamic-g), var(--dynamic-b));
+            --dynamic-color-hex: #f97316;
+        }
         @keyframes pulse-glow {
             0%, 100% { opacity: 0.4; }
             50% { opacity: 0.8; }
@@ -67,7 +74,7 @@
             background-clip: text;
         }
         .glow-line {
-            background: linear-gradient(90deg, transparent, #f97316, transparent);
+            background: linear-gradient(90deg, transparent, var(--dynamic-color), transparent);
         }
         /* Parallax Layer Styles */
         .parallax-container {
@@ -96,7 +103,7 @@
         }
         .parallax-card:hover {
             transform: translateY(-8px) rotateX(2deg) rotateY(-2deg);
-            box-shadow: 0 25px 50px -12px rgba(249, 115, 22, 0.15);
+            box-shadow: 0 25px 50px -12px rgba(var(--dynamic-r), var(--dynamic-g), var(--dynamic-b), 0.15);
         }
         /* Hero Text 3D Effect */
         .hero-title {
@@ -108,7 +115,7 @@
         }
         /* Shimmer Effect on Accent */
         .shimmer-line {
-            background: linear-gradient(90deg, transparent 0%, transparent 40%, #f97316 50%, transparent 60%, transparent 100%);
+            background: linear-gradient(90deg, transparent 0%, transparent 40%, var(--dynamic-color) 50%, transparent 60%, transparent 100%);
             background-size: 200% 100%;
             animation: shimmer 3s ease-in-out infinite;
         }
@@ -131,7 +138,7 @@
             width: 400px;
             height: 400px;
             border-radius: 50%;
-            background: radial-gradient(circle, rgba(249, 115, 22, 0.08) 0%, transparent 70%);
+            background: radial-gradient(circle, rgba(var(--dynamic-r), var(--dynamic-g), var(--dynamic-b), 0.08) 0%, transparent 70%);
             pointer-events: none;
             transform: translate(-50%, -50%);
             z-index: 1;
@@ -140,6 +147,44 @@
         }
         body:hover .mouse-glow {
             opacity: 1;
+        }
+        /* Dynamic accent color utilities */
+        .text-dynamic-accent {
+            color: var(--dynamic-color);
+        }
+        .bg-dynamic-accent {
+            background-color: var(--dynamic-color);
+        }
+        .bg-dynamic-accent-10 {
+            background-color: rgba(var(--dynamic-r), var(--dynamic-g), var(--dynamic-b), 0.1);
+        }
+        .bg-dynamic-accent-5 {
+            background-color: rgba(var(--dynamic-r), var(--dynamic-g), var(--dynamic-b), 0.05);
+        }
+        .border-dynamic-accent-30 {
+            border-color: rgba(var(--dynamic-r), var(--dynamic-g), var(--dynamic-b), 0.3);
+        }
+        .shadow-dynamic-accent {
+            box-shadow: 0 10px 15px -3px rgba(var(--dynamic-r), var(--dynamic-g), var(--dynamic-b), 0.25);
+        }
+        .from-dynamic-accent {
+            --tw-gradient-from: var(--dynamic-color);
+            --tw-gradient-to: rgba(var(--dynamic-r), var(--dynamic-g), var(--dynamic-b), 0);
+        }
+        .to-dynamic-accent-dark {
+            --tw-gradient-to: rgba(var(--dynamic-r), var(--dynamic-g), var(--dynamic-b), 0.8);
+        }
+        .group:hover .group-hover\:bg-dynamic-accent-10 {
+            background-color: rgba(var(--dynamic-r), var(--dynamic-g), var(--dynamic-b), 0.1);
+        }
+        .hover\:border-dynamic-accent-30:hover {
+            border-color: rgba(var(--dynamic-r), var(--dynamic-g), var(--dynamic-b), 0.3);
+        }
+        .hover\:bg-dynamic-accent-dark:hover {
+            background-color: rgba(var(--dynamic-r), var(--dynamic-g), var(--dynamic-b), 0.85);
+        }
+        .hover\:shadow-dynamic-accent:hover {
+            box-shadow: 0 10px 15px -3px rgba(var(--dynamic-r), var(--dynamic-g), var(--dynamic-b), 0.25);
         }
     </style>
 </head>
@@ -157,9 +202,9 @@
     <div id="particles" class="fixed inset-0 pointer-events-none overflow-hidden z-0"></div>
 
     <!-- Gradient orb effects with parallax -->
-    <div class="fixed top-1/4 -left-32 w-96 h-96 bg-fi-accent/10 rounded-full blur-[128px] animate-pulse-glow animate-drift parallax-layer" id="orb1" data-parallax-speed="0.4"></div>
-    <div class="fixed bottom-1/4 -right-32 w-96 h-96 bg-orange-500/5 rounded-full blur-[128px] animate-pulse-glow animate-drift parallax-layer" id="orb2" data-parallax-speed="0.2" style="animation-delay: 1.5s;"></div>
-    <div class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-fi-accent/5 rounded-full blur-[200px] parallax-layer" id="orb3" data-parallax-speed="0.15"></div>
+    <div class="fixed top-1/4 -left-32 w-96 h-96 bg-dynamic-accent-10 rounded-full blur-[128px] animate-pulse-glow animate-drift parallax-layer" id="orb1" data-parallax-speed="0.4"></div>
+    <div class="fixed bottom-1/4 -right-32 w-96 h-96 bg-dynamic-accent-5 rounded-full blur-[128px] animate-pulse-glow animate-drift parallax-layer" id="orb2" data-parallax-speed="0.2" style="animation-delay: 1.5s;"></div>
+    <div class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-dynamic-accent-5 rounded-full blur-[200px] parallax-layer" id="orb3" data-parallax-speed="0.15"></div>
 
     <div class="relative z-10 min-h-screen flex flex-col">
         <!-- Header -->
@@ -167,13 +212,13 @@
             <nav class="flex items-center justify-between">
                 <div class="flex items-center space-x-3">
                     <!-- Logo mark -->
-                    <div class="w-10 h-10 bg-gradient-to-br from-fi-accent to-orange-600 rounded-lg flex items-center justify-center">
+                    <div class="w-10 h-10 bg-gradient-to-br from-dynamic-accent to-dynamic-accent-dark rounded-lg flex items-center justify-center">
                         <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
                         </svg>
                     </div>
                     <span class="text-xl font-semibold text-white tracking-tight">
-                        Federal<span class="text-fi-accent">Innovations</span>
+                        Federal<span class="text-dynamic-accent">Innovations</span>
                     </span>
                 </div>
             </nav>
@@ -184,7 +229,7 @@
             <div class="max-w-4xl mx-auto text-center">
                 <!-- Status badge -->
                 <div class="reveal inline-flex items-center space-x-2 bg-fi-gray/50 border border-white/10 rounded-full px-4 py-2 mb-8 backdrop-blur-sm parallax-layer" data-parallax-speed="0.6">
-                    <span class="w-2 h-2 bg-fi-accent rounded-full animate-pulse"></span>
+                    <span class="w-2 h-2 bg-dynamic-accent rounded-full animate-pulse"></span>
                     <span class="text-sm text-neutral-400 font-medium tracking-wide uppercase">In Development</span>
                 </div>
 
@@ -206,9 +251,9 @@
 
                 <!-- Feature hints -->
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16 max-w-3xl mx-auto">
-                    <div class="parallax-card reveal reveal-delay-1 group p-6 bg-fi-gray/30 border border-white/5 rounded-2xl backdrop-blur-sm hover:border-fi-accent/30 transition-all duration-300" data-tilt>
-                        <div class="w-12 h-12 bg-fi-dark rounded-xl flex items-center justify-center mb-4 mx-auto group-hover:bg-fi-accent/10 transition-colors duration-300">
-                            <svg class="w-6 h-6 text-fi-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div class="parallax-card reveal reveal-delay-1 group p-6 bg-fi-gray/30 border border-white/5 rounded-2xl backdrop-blur-sm hover:border-dynamic-accent-30 transition-all duration-300" data-tilt>
+                        <div class="w-12 h-12 bg-fi-dark rounded-xl flex items-center justify-center mb-4 mx-auto group-hover:bg-dynamic-accent-10 transition-colors duration-300">
+                            <svg class="w-6 h-6 text-dynamic-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                             </svg>
                         </div>
@@ -216,9 +261,9 @@
                         <p class="text-neutral-500 text-sm">Strategic advisory for SBIR awards and gov con acquisitions</p>
                     </div>
 
-                    <div class="parallax-card reveal reveal-delay-2 group p-6 bg-fi-gray/30 border border-white/5 rounded-2xl backdrop-blur-sm hover:border-fi-accent/30 transition-all duration-300" data-tilt>
-                        <div class="w-12 h-12 bg-fi-dark rounded-xl flex items-center justify-center mb-4 mx-auto group-hover:bg-fi-accent/10 transition-colors duration-300">
-                            <svg class="w-6 h-6 text-fi-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div class="parallax-card reveal reveal-delay-2 group p-6 bg-fi-gray/30 border border-white/5 rounded-2xl backdrop-blur-sm hover:border-dynamic-accent-30 transition-all duration-300" data-tilt>
+                        <div class="w-12 h-12 bg-fi-dark rounded-xl flex items-center justify-center mb-4 mx-auto group-hover:bg-dynamic-accent-10 transition-colors duration-300">
+                            <svg class="w-6 h-6 text-dynamic-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
                             </svg>
                         </div>
@@ -226,9 +271,9 @@
                         <p class="text-neutral-500 text-sm">AI strategy and implementation for federal contractors</p>
                     </div>
 
-                    <div class="parallax-card reveal reveal-delay-3 group p-6 bg-fi-gray/30 border border-white/5 rounded-2xl backdrop-blur-sm hover:border-fi-accent/30 transition-all duration-300" data-tilt>
-                        <div class="w-12 h-12 bg-fi-dark rounded-xl flex items-center justify-center mb-4 mx-auto group-hover:bg-fi-accent/10 transition-colors duration-300">
-                            <svg class="w-6 h-6 text-fi-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div class="parallax-card reveal reveal-delay-3 group p-6 bg-fi-gray/30 border border-white/5 rounded-2xl backdrop-blur-sm hover:border-dynamic-accent-30 transition-all duration-300" data-tilt>
+                        <div class="w-12 h-12 bg-fi-dark rounded-xl flex items-center justify-center mb-4 mx-auto group-hover:bg-dynamic-accent-10 transition-colors duration-300">
+                            <svg class="w-6 h-6 text-dynamic-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
                             </svg>
                         </div>
@@ -240,7 +285,7 @@
                 <!-- Contact CTA -->
                 <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
                     <a href="mailto:contact@federalinnovations.com"
-                       class="group inline-flex items-center space-x-2 bg-fi-accent hover:bg-orange-600 text-white font-semibold px-8 py-4 rounded-xl transition-all duration-300 hover:shadow-lg hover:shadow-fi-accent/25">
+                       class="group inline-flex items-center space-x-2 bg-dynamic-accent hover:bg-dynamic-accent-dark text-white font-semibold px-8 py-4 rounded-xl transition-all duration-300 hover:shadow-lg hover:shadow-dynamic-accent">
                         <span>Get Notified</span>
                         <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
@@ -320,10 +365,10 @@
                         height: ${size}px;
                         left: ${x}%;
                         top: ${y}%;
-                        background: rgba(249, 115, 22, ${opacity});
+                        background: rgba(var(--dynamic-r), var(--dynamic-g), var(--dynamic-b), ${opacity});
                         animation-delay: ${delay}s;
                         animation-duration: ${duration}s;
-                        box-shadow: 0 0 ${size * 2}px rgba(249, 115, 22, ${opacity});
+                        box-shadow: 0 0 ${size * 2}px rgba(var(--dynamic-r), var(--dynamic-g), var(--dynamic-b), ${opacity});
                     `;
                     particlesContainer.appendChild(particle);
                 }
@@ -476,6 +521,46 @@
                 init();
             }
         })();
+
+        // Dynamic favicon update function
+        let lastFaviconColor = '';
+        function updateFavicon(hexColor) {
+            // Throttle updates - only change if color shifted significantly
+            if (lastFaviconColor === hexColor) return;
+            lastFaviconColor = hexColor;
+
+            // Create a slightly darker variant for the gradient
+            const darkerHex = shadeColor(hexColor, -20);
+
+            const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:${hexColor}"/>
+      <stop offset="100%" style="stop-color:${darkerHex}"/>
+    </linearGradient>
+  </defs>
+  <rect width="32" height="32" rx="6" fill="url(#grad)"/>
+  <path d="M17.5 6L9 18h6l-1.5 8L22 14h-6l1.5-8z" fill="white"/>
+</svg>`;
+
+            const blob = new Blob([svg], { type: 'image/svg+xml' });
+            const url = URL.createObjectURL(blob);
+            let link = document.querySelector("link[rel*='icon']");
+            if (link) {
+                URL.revokeObjectURL(link.href);
+                link.href = url;
+            }
+        }
+
+        // Helper to darken/lighten a hex color
+        function shadeColor(color, percent) {
+            const num = parseInt(color.replace('#', ''), 16);
+            const amt = Math.round(2.55 * percent);
+            const R = Math.max(0, Math.min(255, (num >> 16) + amt));
+            const G = Math.max(0, Math.min(255, ((num >> 8) & 0x00FF) + amt));
+            const B = Math.max(0, Math.min(255, (num & 0x0000FF) + amt));
+            return '#' + (0x1000000 + R * 0x10000 + G * 0x100 + B).toString(16).slice(1);
+        }
 
         // Three.js Interactive Background
         (function() {
@@ -666,6 +751,19 @@
                 currentColor.lerpColors(colorPalette[colorIndex], colorPalette[nextColorIndex], colorProgress);
                 particlesMaterial.color.copy(currentColor);
                 linesMaterial.color.copy(currentColor);
+
+                // Broadcast current color to CSS custom properties for UI elements
+                const r = Math.round(currentColor.r * 255);
+                const g = Math.round(currentColor.g * 255);
+                const b = Math.round(currentColor.b * 255);
+                const hex = '#' + currentColor.getHexString();
+                document.documentElement.style.setProperty('--dynamic-r', r);
+                document.documentElement.style.setProperty('--dynamic-g', g);
+                document.documentElement.style.setProperty('--dynamic-b', b);
+                document.documentElement.style.setProperty('--dynamic-color-hex', hex);
+
+                // Update dynamic favicon
+                updateFavicon(hex);
 
                 const positions = particlesGeometry.attributes.position.array;
 
