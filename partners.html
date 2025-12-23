@@ -78,6 +78,15 @@
         .group:hover .group-hover\:bg-dynamic-accent-10 { background-color: rgba(var(--dynamic-r), var(--dynamic-g), var(--dynamic-b), 0.1); }
         .hover\:border-dynamic-accent-30:hover { border-color: rgba(var(--dynamic-r), var(--dynamic-g), var(--dynamic-b), 0.3); }
         .hover\:bg-dynamic-accent-dark:hover { background-color: rgba(var(--dynamic-r), var(--dynamic-g), var(--dynamic-b), 0.85); }
+        /* Glassmorphic Button Styles */
+        @keyframes glisten { 0% { left: -100%; } 50%, 100% { left: 100%; } }
+        @keyframes borderGlow { 0%, 100% { border-color: rgba(255, 255, 255, 0.2); } 50% { border-color: rgba(255, 255, 255, 0.4); } }
+        .btn-glass { position: relative; background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 50%, rgba(var(--dynamic-r), var(--dynamic-g), var(--dynamic-b), 0.15) 100%); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.2); box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 0 20px rgba(var(--dynamic-r), var(--dynamic-g), var(--dynamic-b), 0.15); overflow: hidden; animation: borderGlow 3s ease-in-out infinite; }
+        .btn-glass::before { content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.4) 50%, transparent 100%); animation: glisten 3s ease-in-out infinite; pointer-events: none; }
+        .btn-glass::after { content: ''; position: absolute; inset: 0; background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, transparent 50%); pointer-events: none; }
+        .btn-glass:hover { background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.08) 50%, rgba(var(--dynamic-r), var(--dynamic-g), var(--dynamic-b), 0.25) 100%); border-color: rgba(255, 255, 255, 0.35); box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 0 30px rgba(var(--dynamic-r), var(--dynamic-g), var(--dynamic-b), 0.3); transform: translateY(-2px); }
+        .btn-glass:hover::before { animation: glisten 1.5s ease-in-out infinite; }
+        .btn-glass > * { position: relative; z-index: 1; }
         .nav-link { position: relative; color: #a3a3a3; transition: color 0.3s ease; }
         .nav-link:hover { color: #ffffff; }
         .nav-link::after { content: ''; position: absolute; bottom: -4px; left: 0; width: 0; height: 2px; background: var(--dynamic-color); transition: width 0.3s ease; }
@@ -316,7 +325,7 @@
                     <div class="inline-block p-8 bg-fi-gray/30 border border-white/5 rounded-2xl backdrop-blur-sm">
                         <h2 class="text-2xl font-semibold text-white mb-4">Interested in Partnering?</h2>
                         <p class="text-neutral-400 mb-6 max-w-lg">We're always looking for strategic partners who share our commitment to excellence. Let's explore how we can work together.</p>
-                        <a href="/contact.html" class="group inline-flex items-center space-x-2 bg-dynamic-accent hover:bg-dynamic-accent-dark text-white font-semibold px-8 py-4 rounded-xl transition-all duration-300 hover:shadow-lg">
+                        <a href="/contact.html" class="btn-glass group inline-flex items-center space-x-2 text-white font-semibold px-8 py-4 rounded-xl transition-all duration-300">
                             <span>Discuss Partnership</span>
                             <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
