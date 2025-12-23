@@ -798,14 +798,52 @@
             const canvas = document.getElementById('threeCanvas');
             if (!canvas || typeof THREE === 'undefined') return;
 
+            // Check WebGL support
+            function isWebGLAvailable() {
+                try {
+                    const testCanvas = document.createElement('canvas');
+                    return !!(window.WebGLRenderingContext &&
+                        (testCanvas.getContext('webgl') || testCanvas.getContext('experimental-webgl')));
+                } catch (e) {
+                    return false;
+                }
+            }
+
+            if (!isWebGLAvailable()) {
+                canvas.style.display = 'none';
+                console.warn('WebGL not available, skipping 3D background');
+                return;
+            }
+
             // Scene setup
             const scene = new THREE.Scene();
             const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-            const renderer = new THREE.WebGLRenderer({
-                canvas: canvas,
-                alpha: true,
-                antialias: true
-            });
+
+            let renderer;
+            try {
+                renderer = new THREE.WebGLRenderer({
+                    canvas: canvas,
+                    alpha: true,
+                    antialias: true,
+                    powerPreference: 'low-power',
+                    failIfMajorPerformanceCaveat: false
+                });
+            } catch (e) {
+                canvas.style.display = 'none';
+                console.warn('WebGL context creation failed:', e.message);
+                return;
+            }
+
+            // Handle WebGL context loss
+            canvas.addEventListener('webglcontextlost', function(e) {
+                e.preventDefault();
+                console.warn('WebGL context lost');
+            }, false);
+
+            canvas.addEventListener('webglcontextrestored', function() {
+                console.log('WebGL context restored');
+            }, false);
+
             renderer.setSize(window.innerWidth, window.innerHeight);
             renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
             renderer.setClearColor(0x000000, 0);
