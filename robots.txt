@@ -1,0 +1,7 @@
+# Robots.txt for federalinnovations.com
+
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://federalinnovations.com/sitemap.xml
