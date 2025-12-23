@@ -4,7 +4,7 @@
 
     // Configuration
     const config = {
-        particleCount: 15,
+        particleCount: 10,
         mouseParallaxIntensity: 30,
         scrollParallaxIntensity: 0.5,
         smoothing: 0.1
@@ -234,12 +234,12 @@ function shadeColor(color, percent) {
     renderer.setClearColor(0x000000, 0);
 
     const config = {
-        particleCount: 200,
+        particleCount: 150,
         particleSize: 3,
         baseOpacity: 0.4,
-        connectionDistance: 150,
+        connectionDistance: 120,
         mouseInfluence: 80,
-        mouseRadius: 250,
+        mouseRadius: 200,
         depth: 400,
         smoothingFactor: 0.03,
         scrollInfluence: 0.15,
