@@ -141,7 +141,7 @@
         .mobile-menu-btn { display: none; }
         .mobile-menu { display: none; }
         @media (max-width: 768px) {
-            .desktop-nav { display: none; }
+            .desktop-nav { display: none !important; }
             .mobile-menu-btn { display: flex; flex-direction: column; justify-content: center; align-items: center; width: 40px; height: 40px; background: transparent; border: none; cursor: pointer; gap: 5px; z-index: 60; }
             .mobile-menu-btn span { display: block; width: 24px; height: 2px; background: #ffffff; transition: all 0.3s ease; }
             .mobile-menu-btn.active span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
@@ -179,7 +179,7 @@
                     </div>
                     <span class="text-xl font-semibold text-white tracking-tight">Federal<span class="text-dynamic-accent">Innovations</span></span>
                 </a>
-                <div class="desktop-nav flex items-center space-x-8">
+                <div class="desktop-nav hidden md:flex items-center space-x-8">
                     <a href="/" class="nav-link font-medium">Home</a>
                     <div class="dropdown">
                         <button class="nav-link font-medium flex items-center gap-1">
