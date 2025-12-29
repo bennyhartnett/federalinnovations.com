@@ -394,7 +394,7 @@
         }
         @media (max-width: 768px) {
             .desktop-nav {
-                display: none;
+                display: none !important;
             }
             .mobile-menu-btn {
                 display: flex;
@@ -512,7 +512,7 @@
                 </div>
 
                 <!-- Desktop Navigation -->
-                <div class="desktop-nav flex items-center space-x-8">
+                <div class="desktop-nav hidden md:flex items-center space-x-8">
                     <a href="/" class="nav-link font-medium">Home</a>
 
                     <!-- Services Dropdown -->
