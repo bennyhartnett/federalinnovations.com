@@ -1,4 +1,5 @@
 const ROOT_DOMAIN = 'federalinnovations.com';
+// Trigger redeploy
 const INTERNAL_HEADER = 'X-CF-Worker-Internal';
 const EXCLUDED_PATHS = [
   'index.html', 'sw.js', 'manifest.json', 'favicon',
