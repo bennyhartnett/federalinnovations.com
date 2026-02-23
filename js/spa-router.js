@@ -1,7 +1,7 @@
 /**
  * SPA Router - Client-side routing for Federal Innovations
- * Handles subdomain detection, fragment loading, history management,
- * link interception, prefetching, and page transition animations.
+ * Handles fragment loading, history management, link interception,
+ * prefetching, and page transition animations.
  */
 (function () {
   'use strict';
@@ -49,21 +49,14 @@
   // getInitialPage – determine which page to load on first visit
   // ---------------------------------------------------------------------------
   function getInitialPage() {
-    // 1. Subdomain detection
-    var hostname = location.hostname;
-    if (hostname.endsWith('.federalinnovations.com') && hostname !== 'www.federalinnovations.com') {
-      var subdomain = hostname.replace('.federalinnovations.com', '');
-      return nameToPage(subdomain);
-    }
-
-    // 2. Session storage redirect (set by 404.html)
+    // 1. Session storage redirect (set by 404.html)
     var redirect = sessionStorage.getItem('spa-redirect');
     if (redirect) {
       sessionStorage.removeItem('spa-redirect');
       return nameToPage(redirect);
     }
 
-    // 3. URL pathname (e.g. /contact)
+    // 2. URL pathname (e.g. /contact)
     var pathname = location.pathname;
     if (pathname && pathname !== '/') {
       var segment = pathname.split('/').filter(Boolean)[0];
@@ -72,13 +65,13 @@
       }
     }
 
-    // 4. URL hash (e.g. #contact)
+    // 3. URL hash (e.g. #contact)
     var hash = location.hash.replace(/^#\/?/, '');
     if (hash) {
       return nameToPage(hash);
     }
 
-    // 5. Default
+    // 4. Default
     return 'pages/home.html';
   }
 
@@ -195,23 +188,23 @@
     // Home links
     if (href === '/' || href === '/home') {
       e.preventDefault();
-      window.location.href = 'https://federalinnovations.com';
+      loadContent('pages/home.html', true);
       return;
     }
 
-    // Service sub-pages → redirect to subdomain
+    // Service sub-pages → load fragment
     if (href.startsWith('/services/')) {
       e.preventDefault();
       var serviceName = href.replace('/services/', '').replace('.html', '');
-      window.location.href = 'https://' + serviceName + '.federalinnovations.com';
+      loadContent(nameToPage(serviceName), true);
       return;
     }
 
-    // Known page paths → redirect to subdomain
+    // Known page paths → load fragment
     var strippedHref = href.replace(/^\//, '').replace(/\.html$/, '');
     if (PAGE_NAMES.indexOf(strippedHref) !== -1) {
       e.preventDefault();
-      window.location.href = 'https://' + strippedHref + '.federalinnovations.com';
+      loadContent(nameToPage(strippedHref), true);
       return;
     }
   }
