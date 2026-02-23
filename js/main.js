@@ -4,7 +4,6 @@
 
     // Configuration
     const config = {
-        particleCount: 10,
         mouseParallaxIntensity: 30,
         scrollParallaxIntensity: 0.5,
         smoothing: 0.1
@@ -17,42 +16,9 @@
     let ticking = false;
 
     // Elements
-    const mouseGlow = document.getElementById('mouseGlow');
-    const orb1 = document.getElementById('orb1');
-    const orb2 = document.getElementById('orb2');
-    const orb3 = document.getElementById('orb3');
-    const gridBg = document.getElementById('gridBg');
-    const particlesContainer = document.getElementById('particles');
     const parallaxLayers = document.querySelectorAll('.parallax-layer');
     const revealElements = document.querySelectorAll('.reveal');
     const tiltCards = document.querySelectorAll('[data-tilt]');
-
-    // Create floating particles
-    function createParticles() {
-        if (!particlesContainer) return;
-        for (let i = 0; i < config.particleCount; i++) {
-            const particle = document.createElement('div');
-            particle.className = 'particle';
-            const size = Math.random() * 4 + 2;
-            const x = Math.random() * 100;
-            const y = Math.random() * 100;
-            const delay = Math.random() * 8;
-            const duration = 8 + Math.random() * 4;
-            const opacity = Math.random() * 0.3 + 0.1;
-
-            particle.style.cssText = `
-                width: ${size}px;
-                height: ${size}px;
-                left: ${x}%;
-                top: ${y}%;
-                background: rgba(var(--dynamic-r), var(--dynamic-g), var(--dynamic-b), ${opacity});
-                animation-delay: ${delay}s;
-                animation-duration: ${duration}s;
-                box-shadow: 0 0 ${size * 2}px rgba(var(--dynamic-r), var(--dynamic-g), var(--dynamic-b), ${opacity});
-            `;
-            particlesContainer.appendChild(particle);
-        }
-    }
 
     // Smooth lerp function
     function lerp(start, end, factor) {
@@ -76,13 +42,6 @@
 
     // Update scroll-based parallax
     function updateScrollParallax() {
-        const scrollFactor = scrollY * config.scrollParallaxIntensity;
-
-        if (orb1) orb1.style.transform = `translateY(${scrollFactor * 0.4}px)`;
-        if (orb2) orb2.style.transform = `translateY(${scrollFactor * -0.2}px)`;
-        if (orb3) orb3.style.transform = `translate(-50%, calc(-50% + ${scrollFactor * 0.15}px))`;
-        if (gridBg) gridBg.style.transform = `translateY(${scrollFactor * 0.1}px)`;
-
         revealElements.forEach((el) => {
             const rect = el.getBoundingClientRect();
             const windowHeight = window.innerHeight;
@@ -104,30 +63,10 @@
         const offsetX = (currentMouseX - centerX) / centerX;
         const offsetY = (currentMouseY - centerY) / centerY;
 
-        if (mouseGlow) {
-            mouseGlow.style.left = `${currentMouseX}px`;
-            mouseGlow.style.top = `${currentMouseY}px`;
-        }
-
         const intensity = config.mouseParallaxIntensity;
-        if (orb1) {
-            const scrollOffset = scrollY * config.scrollParallaxIntensity * 0.4;
-            orb1.style.transform = `translate(${offsetX * intensity * 0.8}px, ${offsetY * intensity * 0.8 + scrollOffset}px)`;
-        }
-        if (orb2) {
-            const scrollOffset = scrollY * config.scrollParallaxIntensity * -0.2;
-            orb2.style.transform = `translate(${offsetX * intensity * -0.5}px, ${offsetY * intensity * -0.5 + scrollOffset}px)`;
-        }
-        if (orb3) {
-            const scrollOffset = scrollY * config.scrollParallaxIntensity * 0.15;
-            orb3.style.transform = `translate(calc(-50% + ${offsetX * intensity * 0.3}px), calc(-50% + ${offsetY * intensity * 0.3 + scrollOffset}px))`;
-        }
-
         parallaxLayers.forEach((layer) => {
             const speed = parseFloat(layer.dataset.parallaxSpeed) || 0.5;
-            if (layer !== orb1 && layer !== orb2 && layer !== orb3) {
-                layer.style.transform = `translate(${offsetX * intensity * speed * 0.3}px, ${offsetY * intensity * speed * 0.3}px)`;
-            }
+            layer.style.transform = `translate(${offsetX * intensity * speed * 0.3}px, ${offsetY * intensity * speed * 0.3}px)`;
         });
 
         requestAnimationFrame(updateMouseParallax);
@@ -156,7 +95,6 @@
 
     // Initialize
     function init() {
-        createParticles();
         initTiltEffect();
 
         document.addEventListener('mousemove', handleMouseMove);
@@ -219,280 +157,54 @@ function shadeColor(color, percent) {
     return '#' + (0x1000000 + R * 0x10000 + G * 0x100 + B).toString(16).slice(1);
 }
 
-// Three.js Interactive Background
+// Accent Color Cycling
 (function() {
     'use strict';
 
-    const canvas = document.getElementById('threeCanvas');
-    if (!canvas || typeof THREE === 'undefined') return;
-
-    // Check WebGL support
-    function isWebGLAvailable() {
-        try {
-            const testCanvas = document.createElement('canvas');
-            return !!(window.WebGLRenderingContext &&
-                (testCanvas.getContext('webgl') || testCanvas.getContext('experimental-webgl')));
-        } catch (e) {
-            return false;
-        }
-    }
-
-    if (!isWebGLAvailable()) {
-        canvas.style.display = 'none';
-        console.warn('WebGL not available, skipping 3D background');
-        return;
-    }
-
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-
-    let renderer;
-    try {
-        renderer = new THREE.WebGLRenderer({
-            canvas: canvas,
-            alpha: true,
-            antialias: true,
-            powerPreference: 'low-power',
-            failIfMajorPerformanceCaveat: false
-        });
-    } catch (e) {
-        canvas.style.display = 'none';
-        console.warn('WebGL context creation failed:', e.message);
-        return;
-    }
-
-    // Handle WebGL context loss
-    canvas.addEventListener('webglcontextlost', function(e) {
-        e.preventDefault();
-        console.warn('WebGL context lost');
-    }, false);
-
-    canvas.addEventListener('webglcontextrestored', function() {
-        console.log('WebGL context restored');
-    }, false);
-
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    renderer.setClearColor(0x000000, 0);
-
-    const config = {
-        particleCount: 150,
-        particleSize: 3,
-        baseOpacity: 0.4,
-        connectionDistance: 120,
-        mouseInfluence: 80,
-        mouseRadius: 200,
-        depth: 400,
-        smoothingFactor: 0.03,
-        scrollInfluence: 0.15,
-        cameraSmoothing: 0.015,
-        colorTransitionSpeed: 0.0008
-    };
-
     const colorPalette = [
-        new THREE.Color(0x8b5cf6),
-        new THREE.Color(0x3b82f6),
-        new THREE.Color(0xf59e0b)
+        { r: 139, g: 92, b: 246 },  // #8b5cf6 purple
+        { r: 59,  g: 130, b: 246 }, // #3b82f6 blue
+        { r: 245, g: 158, b: 11 }   // #f59e0b amber
     ];
+
     let colorIndex = 0;
     let colorProgress = 0;
-    const currentColor = new THREE.Color(colorPalette[0]);
+    const transitionSpeed = 0.0008;
 
-    let targetMouseX = 0, targetMouseY = 0;
-    let smoothMouseX = 0, smoothMouseY = 0;
-    let targetScrollY = 0;
-    let smoothScrollY = 0;
-    let lastScrollY = 0;
-    let scrollVelocity = 0;
-
-    const particlesGeometry = new THREE.BufferGeometry();
-    const particleCount = config.particleCount;
-    const positions = new Float32Array(particleCount * 3);
-    const velocities = new Float32Array(particleCount * 3);
-
-    for (let i = 0; i < particleCount; i++) {
-        const i3 = i * 3;
-        positions[i3] = (Math.random() - 0.5) * window.innerWidth;
-        positions[i3 + 1] = (Math.random() - 0.5) * window.innerHeight;
-        positions[i3 + 2] = (Math.random() - 0.5) * config.depth;
-        velocities[i3] = (Math.random() - 0.5) * 0.15;
-        velocities[i3 + 1] = (Math.random() - 0.5) * 0.15;
-        velocities[i3 + 2] = (Math.random() - 0.5) * 0.05;
+    function lerpColor(a, b, t) {
+        return {
+            r: Math.round(a.r + (b.r - a.r) * t),
+            g: Math.round(a.g + (b.g - a.g) * t),
+            b: Math.round(a.b + (b.b - a.b) * t)
+        };
     }
 
-    particlesGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-
-    const particlesMaterial = new THREE.PointsMaterial({
-        color: currentColor,
-        size: config.particleSize,
-        transparent: true,
-        opacity: config.baseOpacity,
-        blending: THREE.AdditiveBlending,
-        sizeAttenuation: true
-    });
-
-    const particles = new THREE.Points(particlesGeometry, particlesMaterial);
-    scene.add(particles);
-
-    const linesMaterial = new THREE.LineBasicMaterial({
-        color: currentColor,
-        transparent: true,
-        opacity: 0.15,
-        blending: THREE.AdditiveBlending
-    });
-
-    let linesGeometry = new THREE.BufferGeometry();
-    let lines = new THREE.LineSegments(linesGeometry, linesMaterial);
-    scene.add(lines);
-
-    camera.position.z = 400;
-
-    function lerp(start, end, factor) {
-        return start + (end - start) * factor;
-    }
-
-    function onMouseMove(e) {
-        targetMouseX = (e.clientX - window.innerWidth / 2);
-        targetMouseY = -(e.clientY - window.innerHeight / 2);
-    }
-
-    function onScroll() {
-        targetScrollY = window.pageYOffset;
-        scrollVelocity = targetScrollY - lastScrollY;
-        lastScrollY = targetScrollY;
-    }
-
-    function onResize() {
-        camera.aspect = window.innerWidth / window.innerHeight;
-        camera.updateProjectionMatrix();
-        renderer.setSize(window.innerWidth, window.innerHeight);
-    }
-
-    let connectionFrame = 0;
-    function updateConnections() {
-        connectionFrame++;
-        if (connectionFrame % 5 !== 0) return;
-
-        const positions = particlesGeometry.attributes.position.array;
-        const linePositions = [];
-
-        for (let i = 0; i < particleCount; i++) {
-            const i3 = i * 3;
-            for (let j = i + 1; j < particleCount; j++) {
-                const j3 = j * 3;
-                const dx = positions[i3] - positions[j3];
-                const dy = positions[i3 + 1] - positions[j3 + 1];
-                const dz = positions[i3 + 2] - positions[j3 + 2];
-                const dist = Math.sqrt(dx * dx + dy * dy + dz * dz);
-
-                if (dist < config.connectionDistance) {
-                    linePositions.push(
-                        positions[i3], positions[i3 + 1], positions[i3 + 2],
-                        positions[j3], positions[j3 + 1], positions[j3 + 2]
-                    );
-                }
-            }
-        }
-
-        linesGeometry.dispose();
-        linesGeometry = new THREE.BufferGeometry();
-        linesGeometry.setAttribute('position', new THREE.Float32BufferAttribute(linePositions, 3));
-        lines.geometry = linesGeometry;
+    function toHex(c) {
+        return '#' + ((1 << 24) + (c.r << 16) + (c.g << 8) + c.b).toString(16).slice(1);
     }
 
     function animate() {
-        requestAnimationFrame(animate);
-
-        smoothMouseX = lerp(smoothMouseX, targetMouseX, config.smoothingFactor);
-        smoothMouseY = lerp(smoothMouseY, targetMouseY, config.smoothingFactor);
-        smoothScrollY = lerp(smoothScrollY, targetScrollY, config.smoothingFactor * 1.5);
-        scrollVelocity *= 0.95;
-
-        colorProgress += config.colorTransitionSpeed;
+        colorProgress += transitionSpeed;
         if (colorProgress >= 1) {
             colorProgress = 0;
             colorIndex = (colorIndex + 1) % colorPalette.length;
         }
-        const nextColorIndex = (colorIndex + 1) % colorPalette.length;
-        currentColor.lerpColors(colorPalette[colorIndex], colorPalette[nextColorIndex], colorProgress);
-        particlesMaterial.color.copy(currentColor);
-        linesMaterial.color.copy(currentColor);
 
-        const r = Math.round(currentColor.r * 255);
-        const g = Math.round(currentColor.g * 255);
-        const b = Math.round(currentColor.b * 255);
-        const hex = '#' + currentColor.getHexString();
-        document.documentElement.style.setProperty('--dynamic-r', r);
-        document.documentElement.style.setProperty('--dynamic-g', g);
-        document.documentElement.style.setProperty('--dynamic-b', b);
+        const nextIndex = (colorIndex + 1) % colorPalette.length;
+        const color = lerpColor(colorPalette[colorIndex], colorPalette[nextIndex], colorProgress);
+        const hex = toHex(color);
+
+        document.documentElement.style.setProperty('--dynamic-r', color.r);
+        document.documentElement.style.setProperty('--dynamic-g', color.g);
+        document.documentElement.style.setProperty('--dynamic-b', color.b);
         document.documentElement.style.setProperty('--dynamic-color-hex', hex);
 
         updateFavicon(hex);
 
-        const positions = particlesGeometry.attributes.position.array;
-        const scrollOffset = smoothScrollY * config.scrollInfluence;
-
-        for (let i = 0; i < particleCount; i++) {
-            const i3 = i * 3;
-
-            positions[i3] += velocities[i3];
-            positions[i3 + 1] += velocities[i3 + 1];
-            positions[i3 + 2] += velocities[i3 + 2];
-
-            const depthFactor = (positions[i3 + 2] + config.depth / 2) / config.depth;
-            positions[i3 + 1] -= scrollVelocity * 0.02 * (0.5 + depthFactor * 0.5);
-
-            const dx = positions[i3] - smoothMouseX;
-            const dy = positions[i3 + 1] - smoothMouseY;
-            const dist = Math.sqrt(dx * dx + dy * dy);
-
-            if (dist < config.mouseRadius && dist > 0) {
-                const force = (config.mouseRadius - dist) / config.mouseRadius;
-                const easedForce = force * force * (3 - 2 * force);
-                const angle = Math.atan2(dy, dx);
-                positions[i3] += Math.cos(angle) * easedForce * config.mouseInfluence * 0.012;
-                positions[i3 + 1] += Math.sin(angle) * easedForce * config.mouseInfluence * 0.012;
-            }
-
-            const halfWidth = window.innerWidth / 2;
-            const halfHeight = window.innerHeight / 2;
-            const halfDepth = config.depth / 2;
-
-            if (positions[i3] > halfWidth) positions[i3] = -halfWidth;
-            if (positions[i3] < -halfWidth) positions[i3] = halfWidth;
-            if (positions[i3 + 1] > halfHeight) positions[i3 + 1] = -halfHeight;
-            if (positions[i3 + 1] < -halfHeight) positions[i3 + 1] = halfHeight;
-            if (positions[i3 + 2] > halfDepth) positions[i3 + 2] = -halfDepth;
-            if (positions[i3 + 2] < -halfDepth) positions[i3 + 2] = halfDepth;
-        }
-
-        particlesGeometry.attributes.position.needsUpdate = true;
-        updateConnections();
-
-        const scrollRotation = smoothScrollY * 0.0003;
-        const targetCamX = smoothMouseX * 0.015;
-        const targetCamY = smoothMouseY * 0.015 - scrollOffset * 0.3;
-        const targetCamZ = 400 + scrollOffset * 0.5;
-
-        camera.position.x = lerp(camera.position.x, targetCamX, config.cameraSmoothing);
-        camera.position.y = lerp(camera.position.y, targetCamY, config.cameraSmoothing);
-        camera.position.z = lerp(camera.position.z, targetCamZ, config.cameraSmoothing);
-        camera.rotation.x = lerp(camera.rotation.x, scrollRotation, config.cameraSmoothing);
-        camera.lookAt(scene.position);
-
-        particles.rotation.y = lerp(particles.rotation.y, scrollRotation * 0.5, config.cameraSmoothing);
-        particles.rotation.x = lerp(particles.rotation.x, scrollRotation * 0.3, config.cameraSmoothing);
-        lines.rotation.y = particles.rotation.y;
-        lines.rotation.x = particles.rotation.x;
-
-        renderer.render(scene, camera);
+        requestAnimationFrame(animate);
     }
 
-    document.addEventListener('mousemove', onMouseMove, { passive: true });
-    window.addEventListener('scroll', onScroll, { passive: true });
-    window.addEventListener('resize', onResize);
-
-    animate();
+    requestAnimationFrame(animate);
 })();
 
 // Mobile Menu JavaScript

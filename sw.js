@@ -1,7 +1,8 @@
-const CACHE_VERSION = 'fi-v1';
+const CACHE_VERSION = 'fi-v2';
 const STATIC_ASSETS = [
     '/',
     '/index.html',
+    '/js/bg.js',
     '/js/main.js',
     '/js/spa-router.js',
     '/js/meta-manager.js',

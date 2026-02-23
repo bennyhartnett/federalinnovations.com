@@ -76,7 +76,6 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <style>
         :root {
             --dynamic-r: 249;
@@ -85,36 +84,9 @@
             --dynamic-color: rgb(var(--dynamic-r), var(--dynamic-g), var(--dynamic-b));
             --dynamic-color-hex: #f97316;
         }
-        @keyframes pulse-glow {
-            0%, 100% { opacity: 0.4; }
-            50% { opacity: 0.8; }
-        }
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
-        }
-        @keyframes drift {
-            0%, 100% { transform: translate(0, 0) rotate(0deg); }
-            25% { transform: translate(10px, -10px) rotate(1deg); }
-            50% { transform: translate(-5px, 5px) rotate(-1deg); }
-            75% { transform: translate(-10px, -5px) rotate(0.5deg); }
-        }
-        @keyframes particle-float {
-            0%, 100% { transform: translateY(0) translateX(0) scale(1); opacity: 0.3; }
-            50% { transform: translateY(-20px) translateX(10px) scale(1.1); opacity: 0.6; }
-        }
         @keyframes shimmer {
             0% { background-position: -200% center; }
             100% { background-position: 200% center; }
-        }
-        .animate-pulse-glow {
-            animation: pulse-glow 3s ease-in-out infinite;
-        }
-        .animate-float {
-            animation: float 6s ease-in-out infinite;
-        }
-        .animate-drift {
-            animation: drift 20s ease-in-out infinite;
         }
         .gradient-text {
             background: linear-gradient(135deg, #ffffff 0%, #a3a3a3 100%);
@@ -137,13 +109,6 @@
         .parallax-slow { --parallax-speed: 0.3; }
         .parallax-medium { --parallax-speed: 0.5; }
         .parallax-fast { --parallax-speed: 0.8; }
-        /* Floating Particles */
-        .particle {
-            position: fixed;
-            border-radius: 50%;
-            pointer-events: none;
-            animation: particle-float 8s ease-in-out infinite;
-        }
         /* Enhanced Card Effects */
         .parallax-card {
             transform-style: preserve-3d;
@@ -182,22 +147,6 @@
         .reveal-delay-2 { transition-delay: 0.2s; }
         .reveal-delay-3 { transition-delay: 0.3s; }
         .reveal-delay-4 { transition-delay: 0.4s; }
-        /* Mouse Glow Effect */
-        .mouse-glow {
-            position: fixed;
-            width: 400px;
-            height: 400px;
-            border-radius: 50%;
-            background: radial-gradient(circle, rgba(var(--dynamic-r), var(--dynamic-g), var(--dynamic-b), 0.08) 0%, transparent 70%);
-            pointer-events: none;
-            transform: translate(-50%, -50%);
-            z-index: 1;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-        body:hover .mouse-glow {
-            opacity: 1;
-        }
         /* Dynamic accent color utilities */
         .text-dynamic-accent {
             color: var(--dynamic-color);
@@ -519,22 +468,8 @@
     </style>
 </head>
 <body class="bg-fi-black min-h-screen font-sans antialiased overflow-x-hidden">
-    <!-- Three.js canvas background -->
-    <canvas id="threeCanvas" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none;"></canvas>
-
-    <!-- Mouse glow effect -->
-    <div class="mouse-glow" id="mouseGlow"></div>
-
-    <!-- Subtle grid background with parallax -->
-    <div class="fixed inset-0 opacity-[0.02] parallax-layer parallax-slow" id="gridBg" style="background-image: linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px); background-size: 50px 50px;"></div>
-
-    <!-- Floating particles layer -->
-    <div id="particles" class="fixed inset-0 pointer-events-none overflow-hidden z-0"></div>
-
-    <!-- Gradient orb effects with parallax -->
-    <div class="fixed top-1/4 -left-32 w-96 h-96 bg-dynamic-accent-10 rounded-full blur-[128px] animate-pulse-glow animate-drift parallax-layer" id="orb1" data-parallax-speed="0.4"></div>
-    <div class="fixed bottom-1/4 -right-32 w-96 h-96 bg-dynamic-accent-5 rounded-full blur-[128px] animate-pulse-glow animate-drift parallax-layer" id="orb2" data-parallax-speed="0.2" style="animation-delay: 1.5s;"></div>
-    <div class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-dynamic-accent-5 rounded-full blur-[200px] parallax-layer" id="orb3" data-parallax-speed="0.15"></div>
+    <!-- WebGL particle background -->
+    <canvas id="canvas" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none;"></canvas>
 
     <div class="relative z-10 min-h-screen flex flex-col">
         <!-- Header -->
@@ -638,6 +573,8 @@
         </footer>
     </div>
 
+    <!-- WebGL Background -->
+    <script src="/js/bg.js"></script>
     <!-- Shared JavaScript -->
     <script src="/js/main.js"></script>
     <!-- Meta Manager (must load before SPA router) -->
