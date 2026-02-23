@@ -20,12 +20,6 @@
     'technical-advisory': 'pages/technical-advisory.html'
   };
 
-  // Known page names for link interception matching
-  var PAGE_NAMES = [
-    'contact', 'partners', 'past-performance',
-    'software-engineering', 'ai-systems', 'technical-advisory'
-  ];
-
   // Paths that should be left to default browser behaviour
   var EXCLUDED_PREFIXES = ['/assets', '/css', '/js', '/pages', '/images'];
 
@@ -207,11 +201,14 @@
       return;
     }
 
-    // Known page paths → redirect to subdomain
+    // All remaining paths → redirect to subdomain
     var strippedHref = href.replace(/^\//, '').replace(/\.html$/, '');
-    if (PAGE_NAMES.indexOf(strippedHref) !== -1) {
+    if (strippedHref) {
       e.preventDefault();
-      window.location.href = 'https://' + strippedHref + '.federalinnovations.com';
+      var segments = strippedHref.split('/').filter(Boolean);
+      var firstSegment = segments[0];
+      var remainingPath = segments.slice(1).join('/');
+      window.location.href = 'https://' + firstSegment + '.federalinnovations.com' + (remainingPath ? '/' + remainingPath : '');
       return;
     }
   }
