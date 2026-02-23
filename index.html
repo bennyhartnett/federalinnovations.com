@@ -47,7 +47,7 @@
       "contactPoint": {
         "@type": "ContactPoint",
         "contactType": "customer service",
-        "url": "https://federalinnovations.com/contact.html"
+        "url": "https://contact.federalinnovations.com/"
       },
       "areaServed": "US",
       "serviceType": ["Software Development", "AI Systems", "Government Contracting Advisory"]
@@ -181,6 +181,7 @@
         .reveal-delay-1 { transition-delay: 0.1s; }
         .reveal-delay-2 { transition-delay: 0.2s; }
         .reveal-delay-3 { transition-delay: 0.3s; }
+        .reveal-delay-4 { transition-delay: 0.4s; }
         /* Mouse Glow Effect */
         .mouse-glow {
             position: fixed;
@@ -340,6 +341,12 @@
         .nav-link:hover::after {
             width: 100%;
         }
+        .nav-link.active {
+            color: #ffffff;
+        }
+        .nav-link.active::after {
+            width: 100%;
+        }
         /* Dropdown Menu */
         .dropdown {
             position: relative;
@@ -377,6 +384,10 @@
         }
         .dropdown-item:hover {
             background: rgba(var(--dynamic-r), var(--dynamic-g), var(--dynamic-b), 0.1);
+            color: #ffffff;
+        }
+        .dropdown-item.active {
+            background: rgba(var(--dynamic-r), var(--dynamic-g), var(--dynamic-b), 0.15);
             color: #ffffff;
         }
         .dropdown-chevron {
@@ -456,6 +467,9 @@
             .mobile-nav-link:hover {
                 color: #ffffff;
             }
+            .mobile-nav-link.active {
+                color: var(--dynamic-color);
+            }
             .mobile-dropdown-content {
                 display: none;
                 flex-direction: column;
@@ -474,6 +488,33 @@
             .mobile-dropdown-item:hover {
                 color: var(--dynamic-color);
             }
+            .mobile-dropdown-item.active {
+                color: var(--dynamic-color);
+            }
+        }
+        /* Form Styles (used by contact page) */
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            background: rgba(26, 26, 26, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: #ffffff;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        .form-input:focus {
+            outline: none;
+            border-color: var(--dynamic-color);
+            box-shadow: 0 0 0 3px rgba(var(--dynamic-r), var(--dynamic-g), var(--dynamic-b), 0.1);
+        }
+        .form-input::placeholder { color: #737373; }
+        .form-label { display: block; color: #a3a3a3; font-size: 0.875rem; font-weight: 500; margin-bottom: 8px; }
+        /* Page transition */
+        .page-exit {
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: opacity 0.2s ease, transform 0.2s ease;
         }
     </style>
 </head>
@@ -499,7 +540,7 @@
         <!-- Header -->
         <header class="py-6 px-6 md:px-12 lg:px-20">
             <nav class="flex items-center justify-between">
-                <div class="flex items-center space-x-3">
+                <a href="/" data-href="/" class="flex items-center space-x-3">
                     <!-- Logo mark -->
                     <div class="w-10 h-10 bg-gradient-to-br from-dynamic-accent to-dynamic-accent-dark rounded-lg flex items-center justify-center">
                         <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -509,39 +550,39 @@
                     <span class="text-xl font-semibold text-white tracking-tight">
                         Federal<span class="text-dynamic-accent">Innovations</span>
                     </span>
-                </div>
+                </a>
 
                 <!-- Desktop Navigation -->
                 <div class="desktop-nav hidden md:flex items-center space-x-8">
-                    <a href="/" class="nav-link font-medium">Home</a>
+                    <a href="/" data-href="/" data-page="home" class="nav-link font-medium">Home</a>
 
                     <!-- Services Dropdown -->
                     <div class="dropdown">
-                        <button class="nav-link font-medium flex items-center gap-1">
+                        <button class="nav-link font-medium flex items-center gap-1" data-page="services">
                             Services
                             <svg class="dropdown-chevron w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
                             </svg>
                         </button>
                         <div class="dropdown-menu">
-                            <a href="/services/software-engineering.html" class="dropdown-item">
+                            <a href="/services/software-engineering.html" data-href="/software-engineering" data-page="software-engineering" class="dropdown-item">
                                 <div class="font-medium text-white mb-1">Software Engineering</div>
                                 <div class="text-sm text-neutral-500">Custom software solutions for federal needs</div>
                             </a>
-                            <a href="/services/ai-systems.html" class="dropdown-item">
+                            <a href="/services/ai-systems.html" data-href="/ai-systems" data-page="ai-systems" class="dropdown-item">
                                 <div class="font-medium text-white mb-1">AI Systems & Enablement</div>
                                 <div class="text-sm text-neutral-500">AI strategy, implementation & optimization</div>
                             </a>
-                            <a href="/services/technical-advisory.html" class="dropdown-item">
+                            <a href="/services/technical-advisory.html" data-href="/technical-advisory" data-page="technical-advisory" class="dropdown-item">
                                 <div class="font-medium text-white mb-1">Technical Advisory</div>
                                 <div class="text-sm text-neutral-500">Software, AI & GovCon guidance</div>
                             </a>
                         </div>
                     </div>
 
-                    <a href="/past-performance.html" class="nav-link font-medium">Past Performance</a>
-                    <a href="/partners.html" class="nav-link font-medium">Partners</a>
-                    <a href="/contact.html" class="nav-link font-medium">Contact</a>
+                    <a href="/past-performance.html" data-href="/past-performance" data-page="past-performance" class="nav-link font-medium">Past Performance</a>
+                    <a href="/partners.html" data-href="/partners" data-page="partners" class="nav-link font-medium">Partners</a>
+                    <a href="/contact.html" data-href="/contact" data-page="contact" class="nav-link font-medium">Contact</a>
                 </div>
 
                 <!-- Mobile Menu Button -->
@@ -555,104 +596,31 @@
 
         <!-- Mobile Menu -->
         <div class="mobile-menu" id="mobileMenu">
-            <a href="/" class="mobile-nav-link">Home</a>
+            <a href="/" data-href="/" data-page="home" class="mobile-nav-link">Home</a>
 
             <!-- Mobile Services Dropdown -->
             <div class="text-center">
-                <button class="mobile-nav-link flex items-center gap-2" id="mobileServicesBtn">
+                <button class="mobile-nav-link flex items-center gap-2" id="mobileServicesBtn" data-page="services">
                     Services
                     <svg class="dropdown-chevron w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
                     </svg>
                 </button>
                 <div class="mobile-dropdown-content" id="mobileServicesContent">
-                    <a href="/services/software-engineering.html" class="mobile-dropdown-item">Software Engineering</a>
-                    <a href="/services/ai-systems.html" class="mobile-dropdown-item">AI Systems & Enablement</a>
-                    <a href="/services/technical-advisory.html" class="mobile-dropdown-item">Technical Advisory</a>
+                    <a href="/services/software-engineering.html" data-href="/software-engineering" data-page="software-engineering" class="mobile-dropdown-item">Software Engineering</a>
+                    <a href="/services/ai-systems.html" data-href="/ai-systems" data-page="ai-systems" class="mobile-dropdown-item">AI Systems & Enablement</a>
+                    <a href="/services/technical-advisory.html" data-href="/technical-advisory" data-page="technical-advisory" class="mobile-dropdown-item">Technical Advisory</a>
                 </div>
             </div>
 
-            <a href="/past-performance.html" class="mobile-nav-link">Past Performance</a>
-            <a href="/partners.html" class="mobile-nav-link">Partners</a>
-            <a href="/contact.html" class="mobile-nav-link">Contact</a>
+            <a href="/past-performance.html" data-href="/past-performance" data-page="past-performance" class="mobile-nav-link">Past Performance</a>
+            <a href="/partners.html" data-href="/partners" data-page="partners" class="mobile-nav-link">Partners</a>
+            <a href="/contact.html" data-href="/contact" data-page="contact" class="mobile-nav-link">Contact</a>
         </div>
 
-        <!-- Main content -->
-        <main class="flex-1 flex flex-col items-center justify-center px-6 md:px-12 lg:px-20 py-12 parallax-container">
-            <div class="max-w-4xl mx-auto text-center">
-                <!-- Status badge -->
-                <div class="reveal inline-flex items-center space-x-2 bg-fi-gray/50 border border-white/10 rounded-full px-4 py-2 mb-8 backdrop-blur-sm parallax-layer" data-parallax-speed="0.6">
-                    <span class="w-2 h-2 bg-dynamic-accent rounded-full animate-pulse"></span>
-                    <span class="text-sm text-neutral-400 font-medium tracking-wide uppercase">In Development</span>
-                </div>
-
-                <!-- Main heading -->
-                <h1 class="hero-title text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight mb-6 reveal reveal-delay-1 parallax-layer" data-parallax-speed="0.8" id="heroTitle">
-                    <span class="gradient-text">Coming</span>
-                    <br>
-                    <span class="text-white">Soon</span>
-                </h1>
-
-                <!-- Accent line with shimmer -->
-                <div class="w-24 h-1 glow-line shimmer-line mx-auto mb-8 rounded-full reveal reveal-delay-2"></div>
-
-                <!-- Subheading -->
-                <p class="text-lg md:text-xl text-neutral-400 max-w-2xl mx-auto mb-12 leading-relaxed reveal reveal-delay-2 parallax-layer" data-parallax-speed="0.5">
-                    Strategic consulting and staffing solutions for government contractors.
-                    <span class="text-neutral-300">Accelerating growth in the federal marketplace.</span>
-                </p>
-
-                <!-- Feature hints -->
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16 max-w-3xl mx-auto">
-                    <div class="parallax-card reveal reveal-delay-1 group p-6 bg-fi-gray/30 border border-white/5 rounded-2xl backdrop-blur-sm hover:border-dynamic-accent-30 transition-all duration-300" data-tilt>
-                        <div class="w-12 h-12 bg-fi-dark rounded-xl flex items-center justify-center mb-4 mx-auto group-hover:bg-dynamic-accent-10 transition-colors duration-300">
-                            <svg class="w-6 h-6 text-dynamic-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/>
-                            </svg>
-                        </div>
-                        <h3 class="text-white font-semibold mb-2">Software Development</h3>
-                        <p class="text-neutral-500 text-sm">Custom software solutions for federal agencies and contractors</p>
-                    </div>
-
-                    <div class="parallax-card reveal reveal-delay-2 group p-6 bg-fi-gray/30 border border-white/5 rounded-2xl backdrop-blur-sm hover:border-dynamic-accent-30 transition-all duration-300" data-tilt>
-                        <div class="w-12 h-12 bg-fi-dark rounded-xl flex items-center justify-center mb-4 mx-auto group-hover:bg-dynamic-accent-10 transition-colors duration-300">
-                            <svg class="w-6 h-6 text-dynamic-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
-                            </svg>
-                        </div>
-                        <h3 class="text-white font-semibold mb-2">AI Modernization & Optimization</h3>
-                        <p class="text-neutral-500 text-sm">AI strategy, implementation, and performance optimization</p>
-                    </div>
-
-                    <div class="parallax-card reveal reveal-delay-3 group p-6 bg-fi-gray/30 border border-white/5 rounded-2xl backdrop-blur-sm hover:border-dynamic-accent-30 transition-all duration-300" data-tilt>
-                        <div class="w-12 h-12 bg-fi-dark rounded-xl flex items-center justify-center mb-4 mx-auto group-hover:bg-dynamic-accent-10 transition-colors duration-300">
-                            <svg class="w-6 h-6 text-dynamic-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
-                            </svg>
-                        </div>
-                        <h3 class="text-white font-semibold mb-2">Government Contracting Advisory</h3>
-                        <p class="text-neutral-500 text-sm">Strategic guidance for navigating the federal marketplace</p>
-                    </div>
-                </div>
-
-                <!-- Contact CTA -->
-                <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
-                    <a href="mailto:contact@federalinnovations.com"
-                       class="btn-glass group inline-flex items-center space-x-2 text-white font-semibold px-8 py-4 rounded-xl transition-all duration-300">
-                        <span>Get Notified</span>
-                        <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
-                        </svg>
-                    </a>
-                    <a href="mailto:contact@federalinnovations.com"
-                       class="inline-flex items-center space-x-2 text-neutral-400 hover:text-white font-medium px-6 py-4 transition-colors duration-300">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
-                        </svg>
-                        <span>contact@federalinnovations.com</span>
-                    </a>
-                </div>
-            </div>
+        <!-- Main content - SPA router injects page fragments here -->
+        <main id="main-content" class="flex-1 px-6 md:px-12 lg:px-20 py-12 parallax-container">
+            <!-- Page content loaded dynamically by spa-router.js -->
         </main>
 
         <!-- Footer -->
@@ -670,632 +638,21 @@
         </footer>
     </div>
 
-    <!-- Advanced Parallax JavaScript -->
+    <!-- Shared JavaScript -->
+    <script src="/js/main.js"></script>
+    <!-- Meta Manager (must load before SPA router) -->
+    <script src="/js/meta-manager.js"></script>
+    <!-- SPA Router -->
+    <script src="/js/spa-router.js"></script>
+    <!-- Service Worker Registration -->
     <script>
-        (function() {
-            'use strict';
-
-            // Configuration
-            const config = {
-                particleCount: 15,
-                mouseParallaxIntensity: 30,
-                scrollParallaxIntensity: 0.5,
-                smoothing: 0.1
-            };
-
-            // State
-            let mouseX = 0, mouseY = 0;
-            let currentMouseX = 0, currentMouseY = 0;
-            let scrollY = 0;
-            let ticking = false;
-
-            // Elements
-            const mouseGlow = document.getElementById('mouseGlow');
-            const orb1 = document.getElementById('orb1');
-            const orb2 = document.getElementById('orb2');
-            const orb3 = document.getElementById('orb3');
-            const gridBg = document.getElementById('gridBg');
-            const heroTitle = document.getElementById('heroTitle');
-            const particlesContainer = document.getElementById('particles');
-            const parallaxLayers = document.querySelectorAll('.parallax-layer');
-            const revealElements = document.querySelectorAll('.reveal');
-            const tiltCards = document.querySelectorAll('[data-tilt]');
-
-            // Create floating particles
-            function createParticles() {
-                for (let i = 0; i < config.particleCount; i++) {
-                    const particle = document.createElement('div');
-                    particle.className = 'particle';
-                    const size = Math.random() * 4 + 2;
-                    const x = Math.random() * 100;
-                    const y = Math.random() * 100;
-                    const delay = Math.random() * 8;
-                    const duration = 8 + Math.random() * 4;
-                    const opacity = Math.random() * 0.3 + 0.1;
-
-                    particle.style.cssText = `
-                        width: ${size}px;
-                        height: ${size}px;
-                        left: ${x}%;
-                        top: ${y}%;
-                        background: rgba(var(--dynamic-r), var(--dynamic-g), var(--dynamic-b), ${opacity});
-                        animation-delay: ${delay}s;
-                        animation-duration: ${duration}s;
-                        box-shadow: 0 0 ${size * 2}px rgba(var(--dynamic-r), var(--dynamic-g), var(--dynamic-b), ${opacity});
-                    `;
-                    particlesContainer.appendChild(particle);
-                }
-            }
-
-            // Smooth lerp function
-            function lerp(start, end, factor) {
-                return start + (end - start) * factor;
-            }
-
-            // Handle mouse movement
-            function handleMouseMove(e) {
-                mouseX = e.clientX;
-                mouseY = e.clientY;
-            }
-
-            // Handle scroll
-            function handleScroll() {
-                scrollY = window.pageYOffset;
-                if (!ticking) {
-                    requestAnimationFrame(updateScrollParallax);
-                    ticking = true;
-                }
-            }
-
-            // Update scroll-based parallax
-            function updateScrollParallax() {
-                const scrollFactor = scrollY * config.scrollParallaxIntensity;
-
-                // Move orbs based on scroll
-                if (orb1) orb1.style.transform = `translateY(${scrollFactor * 0.4}px)`;
-                if (orb2) orb2.style.transform = `translateY(${scrollFactor * -0.2}px)`;
-                if (orb3) orb3.style.transform = `translate(-50%, calc(-50% + ${scrollFactor * 0.15}px))`;
-
-                // Move grid background
-                if (gridBg) gridBg.style.transform = `translateY(${scrollFactor * 0.1}px)`;
-
-                // Update reveal elements
-                revealElements.forEach((el) => {
-                    const rect = el.getBoundingClientRect();
-                    const windowHeight = window.innerHeight;
-                    if (rect.top < windowHeight * 0.85) {
-                        el.classList.add('active');
-                    }
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('/sw.js').catch(function(err) {
+                    console.warn('Service worker registration failed:', err);
                 });
-
-                ticking = false;
-            }
-
-            // Update mouse-based parallax (runs on animation frame)
-            function updateMouseParallax() {
-                // Smooth mouse movement
-                currentMouseX = lerp(currentMouseX, mouseX, config.smoothing);
-                currentMouseY = lerp(currentMouseY, mouseY, config.smoothing);
-
-                // Calculate offset from center
-                const centerX = window.innerWidth / 2;
-                const centerY = window.innerHeight / 2;
-                const offsetX = (currentMouseX - centerX) / centerX;
-                const offsetY = (currentMouseY - centerY) / centerY;
-
-                // Update mouse glow position
-                if (mouseGlow) {
-                    mouseGlow.style.left = `${currentMouseX}px`;
-                    mouseGlow.style.top = `${currentMouseY}px`;
-                }
-
-                // Apply mouse parallax to orbs
-                const intensity = config.mouseParallaxIntensity;
-                if (orb1) {
-                    const scrollOffset = scrollY * config.scrollParallaxIntensity * 0.4;
-                    orb1.style.transform = `translate(${offsetX * intensity * 0.8}px, ${offsetY * intensity * 0.8 + scrollOffset}px)`;
-                }
-                if (orb2) {
-                    const scrollOffset = scrollY * config.scrollParallaxIntensity * -0.2;
-                    orb2.style.transform = `translate(${offsetX * intensity * -0.5}px, ${offsetY * intensity * -0.5 + scrollOffset}px)`;
-                }
-                if (orb3) {
-                    const scrollOffset = scrollY * config.scrollParallaxIntensity * 0.15;
-                    orb3.style.transform = `translate(calc(-50% + ${offsetX * intensity * 0.3}px), calc(-50% + ${offsetY * intensity * 0.3 + scrollOffset}px))`;
-                }
-
-                // Apply subtle parallax to hero title
-                if (heroTitle) {
-                    heroTitle.style.transform = `translate(${offsetX * 5}px, ${offsetY * 5}px)`;
-                }
-
-                // Apply parallax to all parallax layers based on data attribute
-                parallaxLayers.forEach((layer) => {
-                    const speed = parseFloat(layer.dataset.parallaxSpeed) || 0.5;
-                    if (layer !== orb1 && layer !== orb2 && layer !== orb3 && layer !== heroTitle) {
-                        layer.style.transform = `translate(${offsetX * intensity * speed * 0.3}px, ${offsetY * intensity * speed * 0.3}px)`;
-                    }
-                });
-
-                requestAnimationFrame(updateMouseParallax);
-            }
-
-            // Initialize 3D tilt effect for cards
-            function initTiltEffect() {
-                tiltCards.forEach((card) => {
-                    card.addEventListener('mousemove', (e) => {
-                        const rect = card.getBoundingClientRect();
-                        const x = e.clientX - rect.left;
-                        const y = e.clientY - rect.top;
-                        const centerX = rect.width / 2;
-                        const centerY = rect.height / 2;
-                        const rotateX = (y - centerY) / centerY * -8;
-                        const rotateY = (x - centerX) / centerX * 8;
-
-                        card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateZ(10px)`;
-                    });
-
-                    card.addEventListener('mouseleave', () => {
-                        card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) translateZ(0)';
-                    });
-                });
-            }
-
-            // Initialize
-            function init() {
-                createParticles();
-                initTiltEffect();
-
-                // Event listeners
-                document.addEventListener('mousemove', handleMouseMove);
-                window.addEventListener('scroll', handleScroll, { passive: true });
-
-                // Start animation loops
-                requestAnimationFrame(updateMouseParallax);
-
-                // Initial scroll check for reveals
-                handleScroll();
-
-                // Trigger initial reveal after small delay
-                setTimeout(() => {
-                    revealElements.forEach((el) => {
-                        const rect = el.getBoundingClientRect();
-                        if (rect.top < window.innerHeight) {
-                            el.classList.add('active');
-                        }
-                    });
-                }, 100);
-            }
-
-            // Run when DOM is ready
-            if (document.readyState === 'loading') {
-                document.addEventListener('DOMContentLoaded', init);
-            } else {
-                init();
-            }
-        })();
-
-        // Dynamic favicon update function
-        let lastFaviconColor = '';
-        function updateFavicon(hexColor) {
-            // Throttle updates - only change if color shifted significantly
-            if (lastFaviconColor === hexColor) return;
-            lastFaviconColor = hexColor;
-
-            // Create a slightly darker variant for the gradient
-            const darkerHex = shadeColor(hexColor, -20);
-
-            const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-  <defs>
-    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:${hexColor}"/>
-      <stop offset="100%" style="stop-color:${darkerHex}"/>
-    </linearGradient>
-  </defs>
-  <rect width="32" height="32" rx="6" fill="url(#grad)"/>
-  <path d="M17.5 6L9 18h6l-1.5 8L22 14h-6l1.5-8z" fill="white"/>
-</svg>`;
-
-            const blob = new Blob([svg], { type: 'image/svg+xml' });
-            const url = URL.createObjectURL(blob);
-            let link = document.querySelector("link[rel*='icon']");
-            if (link) {
-                URL.revokeObjectURL(link.href);
-                link.href = url;
-            }
+            });
         }
-
-        // Helper to darken/lighten a hex color
-        function shadeColor(color, percent) {
-            const num = parseInt(color.replace('#', ''), 16);
-            const amt = Math.round(2.55 * percent);
-            const R = Math.max(0, Math.min(255, (num >> 16) + amt));
-            const G = Math.max(0, Math.min(255, ((num >> 8) & 0x00FF) + amt));
-            const B = Math.max(0, Math.min(255, (num & 0x0000FF) + amt));
-            return '#' + (0x1000000 + R * 0x10000 + G * 0x100 + B).toString(16).slice(1);
-        }
-
-        // Three.js Interactive Background
-        (function() {
-            'use strict';
-
-            const canvas = document.getElementById('threeCanvas');
-            if (!canvas || typeof THREE === 'undefined') return;
-
-            // Check WebGL support
-            function isWebGLAvailable() {
-                try {
-                    const testCanvas = document.createElement('canvas');
-                    return !!(window.WebGLRenderingContext &&
-                        (testCanvas.getContext('webgl') || testCanvas.getContext('experimental-webgl')));
-                } catch (e) {
-                    return false;
-                }
-            }
-
-            if (!isWebGLAvailable()) {
-                canvas.style.display = 'none';
-                console.warn('WebGL not available, skipping 3D background');
-                return;
-            }
-
-            // Scene setup
-            const scene = new THREE.Scene();
-            const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-
-            let renderer;
-            try {
-                renderer = new THREE.WebGLRenderer({
-                    canvas: canvas,
-                    alpha: true,
-                    antialias: true,
-                    powerPreference: 'low-power',
-                    failIfMajorPerformanceCaveat: false
-                });
-            } catch (e) {
-                canvas.style.display = 'none';
-                console.warn('WebGL context creation failed:', e.message);
-                return;
-            }
-
-            // Handle WebGL context loss
-            canvas.addEventListener('webglcontextlost', function(e) {
-                e.preventDefault();
-                console.warn('WebGL context lost');
-            }, false);
-
-            canvas.addEventListener('webglcontextrestored', function() {
-                console.log('WebGL context restored');
-            }, false);
-
-            renderer.setSize(window.innerWidth, window.innerHeight);
-            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-            renderer.setClearColor(0x000000, 0);
-
-            // Configuration - enhanced for smoother animation
-            const config = {
-                particleCount: 200,
-                particleSize: 3,
-                baseOpacity: 0.4,
-                connectionDistance: 150,
-                mouseInfluence: 80,  // Reduced for smoother mouse response
-                mouseRadius: 250,
-                depth: 400,
-                smoothingFactor: 0.03,  // Lower = smoother (was 0.05)
-                scrollInfluence: 0.15,  // How much scroll affects the scene
-                cameraSmoothing: 0.015,  // Smoother camera movement
-                colorTransitionSpeed: 0.0008  // Speed of color cycling
-            };
-
-            // Color palette for smooth transitions: purple, blue, gold
-            const colorPalette = [
-                new THREE.Color(0x8b5cf6),  // Purple
-                new THREE.Color(0x3b82f6),  // Blue
-                new THREE.Color(0xf59e0b)   // Gold
-            ];
-            let colorIndex = 0;
-            let colorProgress = 0;
-            const currentColor = new THREE.Color(colorPalette[0]);
-
-            // Mouse tracking with smoother interpolation
-            let targetMouseX = 0, targetMouseY = 0;
-            let smoothMouseX = 0, smoothMouseY = 0;
-
-            // Scroll tracking
-            let targetScrollY = 0;
-            let smoothScrollY = 0;
-            let lastScrollY = 0;
-            let scrollVelocity = 0;
-
-            // Create particles
-            const particlesGeometry = new THREE.BufferGeometry();
-            const particleCount = config.particleCount;
-            const positions = new Float32Array(particleCount * 3);
-            const velocities = new Float32Array(particleCount * 3);
-            const originalPositions = new Float32Array(particleCount * 3);
-
-            for (let i = 0; i < particleCount; i++) {
-                const i3 = i * 3;
-                positions[i3] = (Math.random() - 0.5) * window.innerWidth;
-                positions[i3 + 1] = (Math.random() - 0.5) * window.innerHeight;
-                positions[i3 + 2] = (Math.random() - 0.5) * config.depth;
-
-                originalPositions[i3] = positions[i3];
-                originalPositions[i3 + 1] = positions[i3 + 1];
-                originalPositions[i3 + 2] = positions[i3 + 2];
-
-                // Slower base velocities for smoother drift
-                velocities[i3] = (Math.random() - 0.5) * 0.15;
-                velocities[i3 + 1] = (Math.random() - 0.5) * 0.15;
-                velocities[i3 + 2] = (Math.random() - 0.5) * 0.05;
-            }
-
-            particlesGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-
-            // Particle material with animated color
-            const particlesMaterial = new THREE.PointsMaterial({
-                color: currentColor,
-                size: config.particleSize,
-                transparent: true,
-                opacity: config.baseOpacity,
-                blending: THREE.AdditiveBlending,
-                sizeAttenuation: true
-            });
-
-            const particles = new THREE.Points(particlesGeometry, particlesMaterial);
-            scene.add(particles);
-
-            // Connection lines with animated color
-            const linesMaterial = new THREE.LineBasicMaterial({
-                color: currentColor,
-                transparent: true,
-                opacity: 0.15,
-                blending: THREE.AdditiveBlending
-            });
-
-            let linesGeometry = new THREE.BufferGeometry();
-            let lines = new THREE.LineSegments(linesGeometry, linesMaterial);
-            scene.add(lines);
-
-            // Camera position
-            camera.position.z = 400;
-
-            // Smooth lerp function
-            function lerp(start, end, factor) {
-                return start + (end - start) * factor;
-            }
-
-            // Mouse move handler
-            function onMouseMove(e) {
-                targetMouseX = (e.clientX - window.innerWidth / 2);
-                targetMouseY = -(e.clientY - window.innerHeight / 2);
-            }
-
-            // Scroll handler
-            function onScroll() {
-                targetScrollY = window.pageYOffset;
-                scrollVelocity = targetScrollY - lastScrollY;
-                lastScrollY = targetScrollY;
-            }
-
-            // Resize handler
-            function onResize() {
-                camera.aspect = window.innerWidth / window.innerHeight;
-                camera.updateProjectionMatrix();
-                renderer.setSize(window.innerWidth, window.innerHeight);
-            }
-
-            // Update connections between nearby particles (throttled)
-            let connectionFrame = 0;
-            function updateConnections() {
-                connectionFrame++;
-                // Only update every 5 frames for performance and smoother appearance
-                if (connectionFrame % 5 !== 0) return;
-
-                const positions = particlesGeometry.attributes.position.array;
-                const linePositions = [];
-
-                for (let i = 0; i < particleCount; i++) {
-                    const i3 = i * 3;
-                    for (let j = i + 1; j < particleCount; j++) {
-                        const j3 = j * 3;
-                        const dx = positions[i3] - positions[j3];
-                        const dy = positions[i3 + 1] - positions[j3 + 1];
-                        const dz = positions[i3 + 2] - positions[j3 + 2];
-                        const dist = Math.sqrt(dx * dx + dy * dy + dz * dz);
-
-                        if (dist < config.connectionDistance) {
-                            linePositions.push(
-                                positions[i3], positions[i3 + 1], positions[i3 + 2],
-                                positions[j3], positions[j3 + 1], positions[j3 + 2]
-                            );
-                        }
-                    }
-                }
-
-                linesGeometry.dispose();
-                linesGeometry = new THREE.BufferGeometry();
-                linesGeometry.setAttribute('position', new THREE.Float32BufferAttribute(linePositions, 3));
-                lines.geometry = linesGeometry;
-            }
-
-            // Animation loop
-            function animate() {
-                requestAnimationFrame(animate);
-
-                // Smooth mouse movement with lower factor for buttery animation
-                smoothMouseX = lerp(smoothMouseX, targetMouseX, config.smoothingFactor);
-                smoothMouseY = lerp(smoothMouseY, targetMouseY, config.smoothingFactor);
-
-                // Smooth scroll with damping
-                smoothScrollY = lerp(smoothScrollY, targetScrollY, config.smoothingFactor * 1.5);
-                // Decay scroll velocity for smooth stop
-                scrollVelocity *= 0.95;
-
-                // Smooth color transition between purple, blue, and gold
-                colorProgress += config.colorTransitionSpeed;
-                if (colorProgress >= 1) {
-                    colorProgress = 0;
-                    colorIndex = (colorIndex + 1) % colorPalette.length;
-                }
-                const nextColorIndex = (colorIndex + 1) % colorPalette.length;
-                currentColor.lerpColors(colorPalette[colorIndex], colorPalette[nextColorIndex], colorProgress);
-                particlesMaterial.color.copy(currentColor);
-                linesMaterial.color.copy(currentColor);
-
-                // Broadcast current color to CSS custom properties for UI elements
-                const r = Math.round(currentColor.r * 255);
-                const g = Math.round(currentColor.g * 255);
-                const b = Math.round(currentColor.b * 255);
-                const hex = '#' + currentColor.getHexString();
-                document.documentElement.style.setProperty('--dynamic-r', r);
-                document.documentElement.style.setProperty('--dynamic-g', g);
-                document.documentElement.style.setProperty('--dynamic-b', b);
-                document.documentElement.style.setProperty('--dynamic-color-hex', hex);
-
-                // Update dynamic favicon
-                updateFavicon(hex);
-
-                const positions = particlesGeometry.attributes.position.array;
-
-                // Calculate scroll-based offsets
-                const scrollOffset = smoothScrollY * config.scrollInfluence;
-                const scrollRotation = smoothScrollY * 0.0003;
-
-                // Update particle positions
-                for (let i = 0; i < particleCount; i++) {
-                    const i3 = i * 3;
-
-                    // Apply velocity for gentle drift (reduced for smoothness)
-                    positions[i3] += velocities[i3];
-                    positions[i3 + 1] += velocities[i3 + 1];
-                    positions[i3 + 2] += velocities[i3 + 2];
-
-                    // Scroll influence - particles drift based on scroll with parallax depth
-                    const depthFactor = (positions[i3 + 2] + config.depth / 2) / config.depth;
-                    positions[i3 + 1] -= scrollVelocity * 0.02 * (0.5 + depthFactor * 0.5);
-
-                    // Mouse influence - push particles away from cursor (smoother)
-                    const dx = positions[i3] - smoothMouseX;
-                    const dy = positions[i3 + 1] - smoothMouseY;
-                    const dist = Math.sqrt(dx * dx + dy * dy);
-
-                    if (dist < config.mouseRadius && dist > 0) {
-                        const force = (config.mouseRadius - dist) / config.mouseRadius;
-                        // Cubic easing for smoother falloff
-                        const easedForce = force * force * (3 - 2 * force);
-                        const angle = Math.atan2(dy, dx);
-                        positions[i3] += Math.cos(angle) * easedForce * config.mouseInfluence * 0.012;
-                        positions[i3 + 1] += Math.sin(angle) * easedForce * config.mouseInfluence * 0.012;
-                    }
-
-                    // Wrap around edges
-                    const halfWidth = window.innerWidth / 2;
-                    const halfHeight = window.innerHeight / 2;
-                    const halfDepth = config.depth / 2;
-
-                    if (positions[i3] > halfWidth) positions[i3] = -halfWidth;
-                    if (positions[i3] < -halfWidth) positions[i3] = halfWidth;
-                    if (positions[i3 + 1] > halfHeight) positions[i3 + 1] = -halfHeight;
-                    if (positions[i3 + 1] < -halfHeight) positions[i3 + 1] = halfHeight;
-                    if (positions[i3 + 2] > halfDepth) positions[i3 + 2] = -halfDepth;
-                    if (positions[i3 + 2] < -halfDepth) positions[i3 + 2] = halfDepth;
-                }
-
-                particlesGeometry.attributes.position.needsUpdate = true;
-
-                // Update connections (throttled internally)
-                updateConnections();
-
-                // Smooth camera movement based on mouse and scroll
-                const targetCamX = smoothMouseX * 0.015;
-                const targetCamY = smoothMouseY * 0.015 - scrollOffset * 0.3;
-                const targetCamZ = 400 + scrollOffset * 0.5;
-
-                camera.position.x = lerp(camera.position.x, targetCamX, config.cameraSmoothing);
-                camera.position.y = lerp(camera.position.y, targetCamY, config.cameraSmoothing);
-                camera.position.z = lerp(camera.position.z, targetCamZ, config.cameraSmoothing);
-
-                // Subtle rotation based on scroll
-                camera.rotation.x = lerp(camera.rotation.x, scrollRotation, config.cameraSmoothing);
-                camera.lookAt(scene.position);
-
-                // Rotate entire particle system slightly based on scroll for depth
-                particles.rotation.y = lerp(particles.rotation.y, scrollRotation * 0.5, config.cameraSmoothing);
-                particles.rotation.x = lerp(particles.rotation.x, scrollRotation * 0.3, config.cameraSmoothing);
-                lines.rotation.y = particles.rotation.y;
-                lines.rotation.x = particles.rotation.x;
-
-                renderer.render(scene, camera);
-            }
-
-            // Event listeners
-            document.addEventListener('mousemove', onMouseMove, { passive: true });
-            window.addEventListener('scroll', onScroll, { passive: true });
-            window.addEventListener('resize', onResize);
-
-            // Start animation
-            animate();
-        })();
-
-        // Mobile Menu JavaScript
-        (function() {
-            'use strict';
-
-            const mobileMenuBtn = document.getElementById('mobileMenuBtn');
-            const mobileMenu = document.getElementById('mobileMenu');
-            const mobileServicesBtn = document.getElementById('mobileServicesBtn');
-            const mobileServicesContent = document.getElementById('mobileServicesContent');
-            const mobileNavLinks = document.querySelectorAll('.mobile-nav-link:not(#mobileServicesBtn)');
-            const mobileDropdownItems = document.querySelectorAll('.mobile-dropdown-item');
-
-            // Toggle mobile menu
-            if (mobileMenuBtn && mobileMenu) {
-                mobileMenuBtn.addEventListener('click', function() {
-                    this.classList.toggle('active');
-                    mobileMenu.classList.toggle('active');
-                    document.body.style.overflow = mobileMenu.classList.contains('active') ? 'hidden' : '';
-                });
-            }
-
-            // Toggle mobile services dropdown
-            if (mobileServicesBtn && mobileServicesContent) {
-                mobileServicesBtn.addEventListener('click', function() {
-                    mobileServicesContent.classList.toggle('active');
-                    const chevron = this.querySelector('.dropdown-chevron');
-                    if (chevron) {
-                        chevron.style.transform = mobileServicesContent.classList.contains('active') ? 'rotate(180deg)' : '';
-                    }
-                });
-            }
-
-            // Close mobile menu when clicking nav links
-            mobileNavLinks.forEach(link => {
-                link.addEventListener('click', function() {
-                    mobileMenuBtn.classList.remove('active');
-                    mobileMenu.classList.remove('active');
-                    document.body.style.overflow = '';
-                });
-            });
-
-            // Close mobile menu when clicking dropdown items
-            mobileDropdownItems.forEach(item => {
-                item.addEventListener('click', function() {
-                    mobileMenuBtn.classList.remove('active');
-                    mobileMenu.classList.remove('active');
-                    document.body.style.overflow = '';
-                });
-            });
-
-            // Close mobile menu on escape key
-            document.addEventListener('keydown', function(e) {
-                if (e.key === 'Escape' && mobileMenu && mobileMenu.classList.contains('active')) {
-                    mobileMenuBtn.classList.remove('active');
-                    mobileMenu.classList.remove('active');
-                    document.body.style.overflow = '';
-                }
-            });
-        })();
     </script>
 </body>
 </html>
