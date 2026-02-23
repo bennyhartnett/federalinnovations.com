@@ -86,7 +86,7 @@ async function handleMainDomain(request, url) {
   if (firstSegment.endsWith('.html')) {
     const subdomain = firstSegment.replace(/\.html$/, '');
     const remainingPath = pathParts.slice(1).join('/');
-    const redirectUrl = `https://${subdomain}.${ROOT_DOMAIN}${remainingPath ? '/' + remainingPath : ''}`;
+    const redirectUrl = `https://${subdomain}.${ROOT_DOMAIN}/${remainingPath}`;
     return Response.redirect(redirectUrl, 301);
   }
 
@@ -97,6 +97,6 @@ async function handleMainDomain(request, url) {
 
   // Default: 301 redirect to subdomain, preserving remaining path
   const remainingPath = pathParts.slice(1).join('/');
-  const redirectUrl = `https://${firstSegment}.${ROOT_DOMAIN}${remainingPath ? '/' + remainingPath : ''}`;
+  const redirectUrl = `https://${firstSegment}.${ROOT_DOMAIN}/${remainingPath}`;
   return Response.redirect(redirectUrl, 301);
 }

@@ -5,12 +5,44 @@
     <title>Redirecting...</title>
     <script>
         // GitHub Pages SPA redirect
-        // Store the attempted path and redirect to root where the SPA router will handle it
+        // Redirect path-based URLs to their corresponding subdomain
+        // e.g., federalinnovations.com/contact → contact.federalinnovations.com
+        var ROOT_DOMAIN = 'federalinnovations.com';
         var path = window.location.pathname;
+
         if (path && path !== '/' && path !== '/index.html') {
-            sessionStorage.setItem('spa-redirect', path);
+            var segments = path.split('/').filter(Boolean);
+            var firstSegment = segments[0];
+
+            // Strip .html extension if present
+            firstSegment = firstSegment.replace(/\.html$/, '');
+
+            // Excluded paths that should not redirect to subdomains
+            var excludedPrefixes = ['assets', 'images', 'css', 'js', 'pages', '.well-known'];
+            var isExcluded = excludedPrefixes.some(function(prefix) {
+                return firstSegment === prefix || firstSegment.startsWith(prefix);
+            });
+
+            // Static file extensions should not redirect
+            var isStaticFile = /\.(js|css|png|jpg|jpeg|gif|svg|ico|woff|woff2|ttf|eot|json|pdf|webp)$/i.test(firstSegment);
+
+            if (!isExcluded && !isStaticFile) {
+                // Services path: /services/software-engineering → software-engineering.federalinnovations.com
+                if (firstSegment === 'services' && segments.length > 1) {
+                    var serviceName = segments[1].replace(/\.html$/, '');
+                    window.location.replace('https://' + serviceName + '.' + ROOT_DOMAIN + '/');
+                } else {
+                    // All other paths: /contact → contact.federalinnovations.com
+                    var remainingPath = segments.slice(1).join('/');
+                    window.location.replace('https://' + firstSegment + '.' + ROOT_DOMAIN + (remainingPath ? '/' + remainingPath : '/'));
+                }
+            } else {
+                // Excluded/static paths: fall back to root
+                window.location.replace('/');
+            }
+        } else {
+            window.location.replace('/');
         }
-        window.location.replace('/');
     </script>
 </head>
 <body>
