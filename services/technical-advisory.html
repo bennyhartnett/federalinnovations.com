@@ -83,6 +83,9 @@
             --dynamic-b: 22;
             --dynamic-color: rgb(var(--dynamic-r), var(--dynamic-g), var(--dynamic-b));
             --dynamic-color-hex: #f97316;
+            --glass-frost: 0.1;
+            --glass-saturation: 1.2;
+            --filter-id: url(#glass-filter-_r_b_);
         }
         @keyframes pulse-glow { 0%, 100% { opacity: 0.4; } 50% { opacity: 0.8; } }
         @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-10px); } }
@@ -161,9 +164,20 @@
             .mobile-dropdown-item:hover { color: var(--dynamic-color); }
             .mobile-dropdown-item.active { color: var(--dynamic-color); }
         }
+        /* Liquid Glass Effect */
+        .liquidglass { position: fixed; left: 50%; top: 50%; transform: translate(-50%); z-index: 1; width: 340px; background: hsl(0 0% 0% / var(--glass-frost, 0)); -webkit-backdrop-filter: var(--filter-id, url(#glass-filter)) saturate(var(--glass-saturation, 1)); backdrop-filter: var(--filter-id, url(#glass-filter)) saturate(var(--glass-saturation, 1)); box-shadow: inset 0 0 2px 1px #ffffff59, inset 0 0 10px 4px #ffffff26, inset 0 4px 16px #11111a0d, inset 0 8px 24px #11111a0d, inset 0 6px 56px #11111a0d; box-shadow: inset 0 0 2px 1px lab(100% 0 0 / .35), inset 0 0 10px 4px lab(100% 0 0 / .15), inset 0 4px 16px lab(5.32203% 1.61424 -5.88284 / .0509804), inset 0 8px 24px lab(5.32203% 1.61424 -5.88284 / .0509804), inset 0 6px 56px lab(5.32203% 1.61424 -5.88284 / .0509804); border-radius: 9999px; height: 140px; pointer-events: none; }
+        .glass-surface__filter { pointer-events: none; opacity: 0; z-index: -1; width: 100%; height: 100%; position: absolute; inset: 0; }
     </style>
 </head>
 <body class="bg-fi-black min-h-screen font-sans antialiased overflow-x-hidden">
+    <!-- Liquid Glass SVG Filter -->
+    <svg class="glass-surface__filter" aria-hidden="true">
+        <filter id="glass-filter-_r_b_" x="-50%" y="-50%" width="200%" height="200%" color-interpolation-filters="sRGB">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="10" />
+        </filter>
+    </svg>
+    <!-- Liquid Glass Element -->
+    <div class="liquidglass"></div>
     <canvas id="threeCanvas" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none;"></canvas>
     <div class="mouse-glow" id="mouseGlow"></div>
     <div class="fixed inset-0 opacity-[0.02] parallax-layer parallax-slow" id="gridBg" style="background-image: linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px); background-size: 50px 50px;"></div>
