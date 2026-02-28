@@ -4,5 +4,7 @@ compatibility_date = "2024-01-01"
 
 routes = [
   { pattern = "federalinnovations.com/*", zone_name = "federalinnovations.com" },
-  { pattern = "*.federalinnovations.com/*", zone_name = "federalinnovations.com" }
+  { pattern = "*.federalinnovations.com/*", zone_name = "federalinnovations.com" },
+  { pattern = "bennyhartnett.com/*", zone_name = "bennyhartnett.com" },
+  { pattern = "*.bennyhartnett.com/*", zone_name = "bennyhartnett.com" }
 ]

@@ -17,7 +17,16 @@
     'past-performance':   'pages/past-performance.html',
     'software-engineering': 'pages/software-engineering.html',
     'ai-systems':         'pages/ai-systems.html',
-    'technical-advisory': 'pages/technical-advisory.html'
+    'technical-advisory': 'pages/technical-advisory.html',
+    'resume':             'pages/resume.html'
+  };
+
+  // All domains the SPA can be served from
+  var KNOWN_DOMAINS = ['federalinnovations.com', 'bennyhartnett.com'];
+
+  // IDN punycode → ASCII alias mapping
+  var IDN_ALIASES = {
+    'xn--rsum-bpad': 'resume'   // résumé → resume
   };
 
   // Paths that should be left to default browser behaviour
@@ -42,11 +51,22 @@
   // ---------------------------------------------------------------------------
   // getInitialPage – determine which page to load on first visit
   // ---------------------------------------------------------------------------
+  function detectSubdomain(hostname) {
+    for (var i = 0; i < KNOWN_DOMAINS.length; i++) {
+      var domain = KNOWN_DOMAINS[i];
+      if (hostname.endsWith('.' + domain) && hostname !== 'www.' + domain) {
+        var sub = hostname.replace('.' + domain, '');
+        return IDN_ALIASES[sub] || sub;
+      }
+    }
+    return null;
+  }
+
   function getInitialPage() {
-    // 1. Subdomain detection
+    // 1. Subdomain detection (supports multiple domains + IDN aliases)
     var hostname = location.hostname;
-    if (hostname.endsWith('.federalinnovations.com') && hostname !== 'www.federalinnovations.com') {
-      var subdomain = hostname.replace('.federalinnovations.com', '');
+    var subdomain = detectSubdomain(hostname);
+    if (subdomain) {
       return nameToPage(subdomain);
     }
 
@@ -186,6 +206,16 @@
       }
     }
 
+    // Determine current root domain for link construction
+    var currentHost = location.hostname;
+    var linkDomain = 'federalinnovations.com';
+    for (var d = 0; d < KNOWN_DOMAINS.length; d++) {
+      if (currentHost === KNOWN_DOMAINS[d] || currentHost.endsWith('.' + KNOWN_DOMAINS[d])) {
+        linkDomain = KNOWN_DOMAINS[d];
+        break;
+      }
+    }
+
     // Home links
     if (href === '/' || href === '/home') {
       e.preventDefault();
@@ -197,7 +227,7 @@
     if (href.startsWith('/services/')) {
       e.preventDefault();
       var serviceName = href.replace('/services/', '').replace('.html', '');
-      window.location.href = 'https://' + serviceName + '.federalinnovations.com';
+      window.location.href = 'https://' + serviceName + '.' + linkDomain;
       return;
     }
 
@@ -208,7 +238,7 @@
       var segments = strippedHref.split('/').filter(Boolean);
       var firstSegment = segments[0];
       var remainingPath = segments.slice(1).join('/');
-      window.location.href = 'https://' + firstSegment + '.federalinnovations.com' + (remainingPath ? '/' + remainingPath : '');
+      window.location.href = 'https://' + firstSegment + '.' + linkDomain + (remainingPath ? '/' + remainingPath : '');
       return;
     }
   }
