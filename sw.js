@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'fi-v3';
+const CACHE_VERSION = 'fi-v4';
 const STATIC_ASSETS = [
     '/',
     '/index.html',
@@ -14,7 +14,8 @@ const STATIC_ASSETS = [
     '/pages/past-performance.html',
     '/pages/software-engineering.html',
     '/pages/ai-systems.html',
-    '/pages/technical-advisory.html'
+    '/pages/technical-advisory.html',
+    '/pages/resume.html'
 ];
 
 // Install - pre-cache static assets

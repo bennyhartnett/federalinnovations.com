@@ -48,6 +48,12 @@
       description: 'Technical advisory services for software, AI, and government contracting',
       canonical: 'https://technical-advisory.federalinnovations.com/',
       ogUrl: 'https://technical-advisory.federalinnovations.com/'
+    },
+    'pages/resume.html': {
+      title: 'Benny Hartnett | R\u00e9sum\u00e9',
+      description: 'Benny Hartnett - Software engineer, AI practitioner, and federal technology consultant in Washington, D.C.',
+      canonical: 'https://resume.bennyhartnett.com/',
+      ogUrl: 'https://resume.bennyhartnett.com/'
     }
   };
 
