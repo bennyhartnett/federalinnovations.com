@@ -1,162 +1,217 @@
 <style>
-        .form-input {
-            width: 100%;
-            padding: 12px 16px;
-            background: rgba(26, 26, 26, 0.8);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 12px;
-            color: #ffffff;
-            font-size: 1rem;
-            transition: all 0.3s ease;
-        }
-        .form-input:focus {
-            outline: none;
-            border-color: var(--dynamic-color);
-            box-shadow: 0 0 0 3px rgba(var(--dynamic-r), var(--dynamic-g), var(--dynamic-b), 0.1);
-        }
-        .form-input::placeholder { color: #737373; }
-        .form-label { display: block; color: #a3a3a3; font-size: 0.875rem; font-weight: 500; margin-bottom: 8px; }
+    .form-input {
+        width: 100%;
+        padding: 12px 16px;
+        background: rgba(26, 26, 26, 0.8);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        color: #ffffff;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+    }
+
+    .form-input:focus {
+        outline: none;
+        border-color: var(--dynamic-color);
+        box-shadow: 0 0 0 3px rgba(var(--dynamic-r), var(--dynamic-g), var(--dynamic-b), 0.1);
+    }
+
+    .form-input::placeholder {
+        color: #737373;
+    }
+
+    .form-label {
+        display: block;
+        color: #a3a3a3;
+        font-size: 0.875rem;
+        font-weight: 500;
+        margin-bottom: 8px;
+    }
 </style>
-            <div class="max-w-6xl mx-auto">
-                <!-- Hero Section -->
-                <div class="text-center mb-16">
-                    <div class="reveal inline-flex items-center space-x-2 bg-fi-gray/50 border border-white/10 rounded-full px-4 py-2 mb-8 backdrop-blur-sm">
-                        <svg class="w-5 h-5 text-dynamic-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+<div class="max-w-6xl mx-auto relative z-10">
+    <!-- Hero Section -->
+    <div class="text-center mb-20">
+        <div
+            class="reveal inline-flex items-center space-x-2 bg-black/40 border border-white/10 rounded-full px-5 py-2.5 mb-10 backdrop-blur-xl shadow-2xl">
+            <svg class="w-5 h-5 text-dynamic-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                    d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+            </svg>
+            <span class="text-xs text-neutral-300 font-semibold tracking-widest uppercase">Get in Touch</span>
+        </div>
+        <h1
+            class="text-5xl md:text-7xl lg:text-[6rem] font-display font-bold tracking-tight mb-8 reveal reveal-delay-1 leading-[1.1]">
+            <span class="text-white">Contact</span>
+            <br>
+            <span class="text-transparent bg-clip-text bg-gradient-to-r from-dynamic-accent to-white">Us</span>
+        </h1>
+        <div class="w-32 h-1.5 glow-line shimmer-line mx-auto mb-10 rounded-full reveal reveal-delay-2 opacity-80">
+        </div>
+        <p
+            class="text-lg md:text-2xl text-neutral-400 max-w-3xl mx-auto leading-relaxed reveal reveal-delay-2 font-light">
+            Ready to accelerate your mission?
+            <span class="text-white font-medium">Let's map out your vector for success.</span>
+        </p>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-24">
+        <!-- Contact Form -->
+        <div class="reveal reveal-delay-1">
+            <div class="p-10 glass-tile rounded-[2rem]">
+                <h2 class="text-3xl font-display font-semibold text-white mb-8 tracking-tight">Secure Communications
+                </h2>
+                <form action="mailto:contact@federalinnovations.com" method="post" enctype="text/plain"
+                    class="space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label for="firstName" class="form-label tracking-wide text-xs uppercase">First Name</label>
+                            <input type="text" id="firstName" name="firstName"
+                                class="form-input bg-black/40 border-white/10 focus:border-dynamic-accent/50 focus:ring-1 focus:ring-dynamic-accent/50 rounded-xl"
+                                placeholder="John" required>
+                        </div>
+                        <div>
+                            <label for="lastName" class="form-label tracking-wide text-xs uppercase">Last Name</label>
+                            <input type="text" id="lastName" name="lastName"
+                                class="form-input bg-black/40 border-white/10 focus:border-dynamic-accent/50 focus:ring-1 focus:ring-dynamic-accent/50 rounded-xl"
+                                placeholder="Doe" required>
+                        </div>
+                    </div>
+                    <div>
+                        <label for="email" class="form-label tracking-wide text-xs uppercase">Email</label>
+                        <input type="email" id="email" name="email"
+                            class="form-input bg-black/40 border-white/10 focus:border-dynamic-accent/50 focus:ring-1 focus:ring-dynamic-accent/50 rounded-xl"
+                            placeholder="john@example.gov" required>
+                    </div>
+                    <div>
+                        <label for="organization"
+                            class="form-label tracking-wide text-xs uppercase">Organization</label>
+                        <input type="text" id="organization" name="organization"
+                            class="form-input bg-black/40 border-white/10 focus:border-dynamic-accent/50 focus:ring-1 focus:ring-dynamic-accent/50 rounded-xl"
+                            placeholder="Agency or Company Name">
+                    </div>
+                    <div>
+                        <label for="interest" class="form-label tracking-wide text-xs uppercase">I'm interested
+                            in...</label>
+                        <select id="interest" name="interest"
+                            class="form-input bg-black/40 border-white/10 focus:border-dynamic-accent/50 focus:ring-1 focus:ring-dynamic-accent/50 rounded-xl">
+                            <option value="">Select an option</option>
+                            <option value="software">Software Engineering</option>
+                            <option value="ai">AI Systems & Enablement</option>
+                            <option value="advisory">Technical Advisory</option>
+                            <option value="partnership">Partnership Opportunity</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="message" class="form-label tracking-wide text-xs uppercase">Message</label>
+                        <textarea id="message" name="message" rows="4"
+                            class="form-input bg-black/40 border-white/10 focus:border-dynamic-accent/50 focus:ring-1 focus:ring-dynamic-accent/50 rounded-xl"
+                            placeholder="Detail your operational requirements..." required></textarea>
+                    </div>
+                    <button type="submit"
+                        class="btn-glass w-full group inline-flex items-center justify-center space-x-3 text-white font-semibold px-8 py-5 rounded-full transition-all duration-500 tracking-wide mt-4">
+                        <span>Transmit Message</span>
+                        <svg class="w-5 h-5 group-hover:translate-x-1.5 transition-transform duration-300" fill="none"
+                            stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M17 8l4 4m0 0l-4 4m4-4H3" />
                         </svg>
-                        <span class="text-sm text-neutral-400 font-medium tracking-wide uppercase">Get in Touch</span>
-                    </div>
-                    <h1 class="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight mb-6 reveal reveal-delay-1">
-                        <span class="gradient-text">Contact</span>
-                        <br>
-                        <span class="text-white">Us</span>
-                    </h1>
-                    <div class="w-24 h-1 glow-line shimmer-line mx-auto mb-8 rounded-full reveal reveal-delay-2"></div>
-                    <p class="text-lg md:text-xl text-neutral-400 max-w-3xl mx-auto leading-relaxed reveal reveal-delay-2">
-                        Ready to accelerate your mission? Let's start a conversation about how we can help.
-                    </p>
-                </div>
+                    </button>
+                </form>
+            </div>
+        </div>
 
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
-                    <!-- Contact Form -->
-                    <div class="reveal reveal-delay-1">
-                        <div class="p-8 bg-fi-gray/30 border border-white/5 rounded-2xl backdrop-blur-sm">
-                            <h2 class="text-2xl font-semibold text-white mb-6">Send a Message</h2>
-                            <form action="mailto:contact@federalinnovations.com" method="post" enctype="text/plain" class="space-y-6">
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                    <div>
-                                        <label for="firstName" class="form-label">First Name</label>
-                                        <input type="text" id="firstName" name="firstName" class="form-input" placeholder="John" required>
-                                    </div>
-                                    <div>
-                                        <label for="lastName" class="form-label">Last Name</label>
-                                        <input type="text" id="lastName" name="lastName" class="form-input" placeholder="Doe" required>
-                                    </div>
-                                </div>
-                                <div>
-                                    <label for="email" class="form-label">Email</label>
-                                    <input type="email" id="email" name="email" class="form-input" placeholder="john@example.gov" required>
-                                </div>
-                                <div>
-                                    <label for="organization" class="form-label">Organization</label>
-                                    <input type="text" id="organization" name="organization" class="form-input" placeholder="Agency or Company Name">
-                                </div>
-                                <div>
-                                    <label for="interest" class="form-label">I'm interested in...</label>
-                                    <select id="interest" name="interest" class="form-input">
-                                        <option value="">Select an option</option>
-                                        <option value="software">Software Engineering</option>
-                                        <option value="ai">AI Systems & Enablement</option>
-                                        <option value="advisory">Technical Advisory</option>
-                                        <option value="partnership">Partnership Opportunity</option>
-                                        <option value="other">Other</option>
-                                    </select>
-                                </div>
-                                <div>
-                                    <label for="message" class="form-label">Message</label>
-                                    <textarea id="message" name="message" rows="4" class="form-input" placeholder="Tell us about your project or inquiry..." required></textarea>
-                                </div>
-                                <button type="submit" class="btn-glass w-full group inline-flex items-center justify-center space-x-2 text-white font-semibold px-8 py-4 rounded-xl transition-all duration-300">
-                                    <span>Send Message</span>
-                                    <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
-                                    </svg>
-                                </button>
-                            </form>
+        <!-- Contact Info -->
+        <div class="space-y-8 reveal reveal-delay-2">
+            <div class="p-10 glass-tile rounded-[2rem]">
+                <h2 class="text-3xl font-display font-semibold text-white mb-8 tracking-tight">Direct Channels</h2>
+                <div class="space-y-8">
+                    <div class="flex items-start gap-5 group">
+                        <div
+                            class="w-14 h-14 bg-white/5 border border-white/10 rounded-2xl flex items-center justify-center flex-shrink-0 group-hover:bg-dynamic-accent/20 group-hover:border-dynamic-accent/50 transition-all duration-500 shadow-md">
+                            <svg class="w-6 h-6 text-white group-hover:text-dynamic-accent transition-colors duration-500"
+                                fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                    d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="text-white font-display font-medium text-lg mb-1">Email Command</h3>
+                            <a href="mailto:contact@federalinnovations.com"
+                                class="text-neutral-400 font-light hover:text-dynamic-accent transition-colors">contact@federalinnovations.com</a>
                         </div>
                     </div>
-
-                    <!-- Contact Info -->
-                    <div class="space-y-8 reveal reveal-delay-2">
-                        <div class="p-8 bg-fi-gray/30 border border-white/5 rounded-2xl backdrop-blur-sm">
-                            <h2 class="text-2xl font-semibold text-white mb-6">Contact Information</h2>
-                            <div class="space-y-6">
-                                <div class="flex items-start gap-4">
-                                    <div class="w-12 h-12 bg-fi-dark rounded-xl flex items-center justify-center flex-shrink-0">
-                                        <svg class="w-6 h-6 text-dynamic-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
-                                        </svg>
-                                    </div>
-                                    <div>
-                                        <h3 class="text-white font-medium mb-1">Email</h3>
-                                        <a href="mailto:contact@federalinnovations.com" class="text-neutral-400 hover:text-dynamic-accent transition-colors">contact@federalinnovations.com</a>
-                                    </div>
-                                </div>
-                                <div class="flex items-start gap-4">
-                                    <div class="w-12 h-12 bg-fi-dark rounded-xl flex items-center justify-center flex-shrink-0">
-                                        <svg class="w-6 h-6 text-dynamic-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
-                                        </svg>
-                                    </div>
-                                    <div>
-                                        <h3 class="text-white font-medium mb-1">Location</h3>
-                                        <p class="text-neutral-400">Washington, D.C. Metro Area</p>
-                                    </div>
-                                </div>
-                                <div class="flex items-start gap-4">
-                                    <div class="w-12 h-12 bg-fi-dark rounded-xl flex items-center justify-center flex-shrink-0">
-                                        <svg class="w-6 h-6 text-dynamic-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                                        </svg>
-                                    </div>
-                                    <div>
-                                        <h3 class="text-white font-medium mb-1">Response Time</h3>
-                                        <p class="text-neutral-400">We typically respond within 1 business day</p>
-                                    </div>
-                                </div>
-                            </div>
+                    <div class="flex items-start gap-5 group">
+                        <div
+                            class="w-14 h-14 bg-white/5 border border-white/10 rounded-2xl flex items-center justify-center flex-shrink-0 group-hover:bg-dynamic-accent/20 group-hover:border-dynamic-accent/50 transition-all duration-500 shadow-md">
+                            <svg class="w-6 h-6 text-white group-hover:text-dynamic-accent transition-colors duration-500"
+                                fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                    d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                    d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                            </svg>
                         </div>
-
-                        <div class="p-8 bg-fi-gray/30 border border-white/5 rounded-2xl backdrop-blur-sm">
-                            <h3 class="text-xl font-semibold text-white mb-4">Quick Links</h3>
-                            <div class="space-y-3">
-                                <a href="/services/software-engineering.html" class="flex items-center gap-3 text-neutral-400 hover:text-white transition-colors">
-                                    <svg class="w-5 h-5 text-dynamic-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-                                    </svg>
-                                    Software Engineering Services
-                                </a>
-                                <a href="/services/ai-systems.html" class="flex items-center gap-3 text-neutral-400 hover:text-white transition-colors">
-                                    <svg class="w-5 h-5 text-dynamic-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-                                    </svg>
-                                    AI Systems & Enablement
-                                </a>
-                                <a href="/services/technical-advisory.html" class="flex items-center gap-3 text-neutral-400 hover:text-white transition-colors">
-                                    <svg class="w-5 h-5 text-dynamic-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-                                    </svg>
-                                    Technical Advisory
-                                </a>
-                                <a href="/past-performance.html" class="flex items-center gap-3 text-neutral-400 hover:text-white transition-colors">
-                                    <svg class="w-5 h-5 text-dynamic-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-                                    </svg>
-                                    Past Performance
-                                </a>
-                            </div>
+                        <div>
+                            <h3 class="text-white font-display font-medium text-lg mb-1">HQ Location</h3>
+                            <p class="text-neutral-400 font-light">Washington, D.C. Metro Area</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-5 group">
+                        <div
+                            class="w-14 h-14 bg-white/5 border border-white/10 rounded-2xl flex items-center justify-center flex-shrink-0 group-hover:bg-dynamic-accent/20 group-hover:border-dynamic-accent/50 transition-all duration-500 shadow-md">
+                            <svg class="w-6 h-6 text-white group-hover:text-dynamic-accent transition-colors duration-500"
+                                fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="text-white font-display font-medium text-lg mb-1">Service Level Objective</h3>
+                            <p class="text-neutral-400 font-light">Guaranteed response within 24 hours.</p>
                         </div>
                     </div>
                 </div>
             </div>
+
+            <div class="p-10 glass-tile rounded-[2rem]">
+                <h3 class="text-2xl font-display font-semibold text-white mb-6 tracking-tight">Mission Vectors</h3>
+                <div class="space-y-4">
+                    <a href="/software-engineering.html" data-href="/software-engineering"
+                        data-page="software-engineering"
+                        class="flex items-center gap-4 text-neutral-400 font-light hover:text-white transition-colors group">
+                        <svg class="w-5 h-5 text-neutral-500 group-hover:text-dynamic-accent transition-colors"
+                            fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                        </svg>
+                        Software Engineering
+                    </a>
+                    <a href="/ai-systems.html" data-href="/ai-systems" data-page="ai-systems"
+                        class="flex items-center gap-4 text-neutral-400 font-light hover:text-white transition-colors group">
+                        <svg class="w-5 h-5 text-neutral-500 group-hover:text-dynamic-accent transition-colors"
+                            fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                        </svg>
+                        AI Systems & Enablement
+                    </a>
+                    <a href="/technical-advisory.html" data-href="/technical-advisory" data-page="technical-advisory"
+                        class="flex items-center gap-4 text-neutral-400 font-light hover:text-white transition-colors group">
+                        <svg class="w-5 h-5 text-neutral-500 group-hover:text-dynamic-accent transition-colors"
+                            fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                        </svg>
+                        Technical Advisory
+                    </a>
+                    <a href="/past-performance.html" data-href="/past-performance" data-page="past-performance"
+                        class="flex items-center gap-4 text-neutral-400 font-light hover:text-white transition-colors group">
+                        <svg class="w-5 h-5 text-neutral-500 group-hover:text-dynamic-accent transition-colors"
+                            fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                        </svg>
+                        Past Performance Review
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

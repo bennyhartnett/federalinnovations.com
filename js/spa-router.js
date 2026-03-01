@@ -189,7 +189,11 @@
     // Home links
     if (href === '/' || href === '/home') {
       e.preventDefault();
-      window.location.href = 'https://federalinnovations.com';
+      if (location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') {
+        window.location.href = 'https://federalinnovations.com';
+      } else {
+        loadContent('pages/home.html');
+      }
       return;
     }
 
@@ -197,7 +201,11 @@
     if (href.startsWith('/services/')) {
       e.preventDefault();
       var serviceName = href.replace('/services/', '').replace('.html', '');
-      window.location.href = 'https://' + serviceName + '.federalinnovations.com';
+      if (location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') {
+        window.location.href = 'https://' + serviceName + '.federalinnovations.com';
+      } else {
+        loadContent('pages/' + serviceName + '.html');
+      }
       return;
     }
 
@@ -208,7 +216,11 @@
       var segments = strippedHref.split('/').filter(Boolean);
       var firstSegment = segments[0];
       var remainingPath = segments.slice(1).join('/');
-      window.location.href = 'https://' + firstSegment + '.federalinnovations.com' + (remainingPath ? '/' + remainingPath : '');
+      if (location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') {
+        window.location.href = 'https://' + firstSegment + '.federalinnovations.com' + (remainingPath ? '/' + remainingPath : '');
+      } else {
+        loadContent('pages/' + firstSegment + '.html');
+      }
       return;
     }
   }

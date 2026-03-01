@@ -68,6 +68,7 @@
                     },
                     fontFamily: {
                         'sans': ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+                        'display': ['Outfit', 'system-ui', '-apple-system', 'sans-serif'],
                     },
                 }
             }
@@ -75,7 +76,7 @@
     </script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
         :root {
             --dynamic-r: 249;
@@ -136,17 +137,28 @@
         /* Scroll Reveal Animations */
         .reveal {
             opacity: 0;
-            transform: translateY(30px);
-            transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            transform: translateY(40px) scale(0.98);
+            transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1), transform 1s cubic-bezier(0.16, 1, 0.3, 1);
         }
         .reveal.active {
             opacity: 1;
-            transform: translateY(0);
+            transform: translateY(0) scale(1);
         }
         .reveal-delay-1 { transition-delay: 0.1s; }
         .reveal-delay-2 { transition-delay: 0.2s; }
         .reveal-delay-3 { transition-delay: 0.3s; }
         .reveal-delay-4 { transition-delay: 0.4s; }
+        
+        /* New Animated Mesh Gradients */
+        .mesh-bg {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: 
+                radial-gradient(circle at 15% 50%, rgba(var(--dynamic-r), var(--dynamic-g), var(--dynamic-b), 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 85% 30%, rgba(var(--dynamic-r), var(--dynamic-g), var(--dynamic-b), 0.05) 0%, transparent 50%);
+            z-index: -1;
+            pointer-events: none;
+        }
         /* Dynamic accent color utilities */
         .text-dynamic-accent {
             color: var(--dynamic-color);
@@ -185,80 +197,60 @@
         .hover\:shadow-dynamic-accent:hover {
             box-shadow: 0 10px 15px -3px rgba(var(--dynamic-r), var(--dynamic-g), var(--dynamic-b), 0.25);
         }
-        /* Glassmorphic Button Styles */
+        /* Premium Glassmorphic Button Styles */
         @keyframes glisten {
-            0% {
-                left: -100%;
-            }
-            50%, 100% {
-                left: 100%;
-            }
+            0% { left: -100%; }
+            50%, 100% { left: 100%; }
         }
         @keyframes borderGlow {
-            0%, 100% {
-                border-color: rgba(255, 255, 255, 0.2);
-            }
-            50% {
-                border-color: rgba(255, 255, 255, 0.4);
-            }
+            0%, 100% { border-color: rgba(255, 255, 255, 0.1); }
+            50% { border-color: rgba(255, 255, 255, 0.3); }
         }
         .btn-glass {
             position: relative;
             background: linear-gradient(
                 135deg,
-                rgba(255, 255, 255, 0.1) 0%,
-                rgba(255, 255, 255, 0.05) 50%,
-                rgba(var(--dynamic-r), var(--dynamic-g), var(--dynamic-b), 0.15) 100%
+                rgba(255, 255, 255, 0.05) 0%,
+                rgba(255, 255, 255, 0.01) 50%,
+                rgba(var(--dynamic-r), var(--dynamic-g), var(--dynamic-b), 0.1) 100%
             );
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             box-shadow:
-                0 8px 32px rgba(0, 0, 0, 0.3),
-                inset 0 1px 0 rgba(255, 255, 255, 0.1),
-                0 0 20px rgba(var(--dynamic-r), var(--dynamic-g), var(--dynamic-b), 0.15);
+                0 4px 24px rgba(0, 0, 0, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2),
+                0 0 15px rgba(var(--dynamic-r), var(--dynamic-g), var(--dynamic-b), 0.1);
             overflow: hidden;
-            animation: borderGlow 3s ease-in-out infinite;
+            animation: borderGlow 4s ease-in-out infinite;
+            border-radius: 99px; /* Pill shape for modern look */
         }
         .btn-glass::before {
             content: '';
             position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
+            top: 0; left: -100%;
+            width: 100%; height: 100%;
             background: linear-gradient(
                 90deg,
                 transparent 0%,
-                rgba(255, 255, 255, 0.4) 50%,
+                rgba(255, 255, 255, 0.2) 50%,
                 transparent 100%
             );
-            animation: glisten 3s ease-in-out infinite;
-            pointer-events: none;
-        }
-        .btn-glass::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(
-                135deg,
-                rgba(255, 255, 255, 0.1) 0%,
-                transparent 50%
-            );
+            animation: glisten 4s ease-in-out infinite;
             pointer-events: none;
         }
         .btn-glass:hover {
             background: linear-gradient(
                 135deg,
-                rgba(255, 255, 255, 0.15) 0%,
-                rgba(255, 255, 255, 0.08) 50%,
-                rgba(var(--dynamic-r), var(--dynamic-g), var(--dynamic-b), 0.25) 100%
+                rgba(255, 255, 255, 0.1) 0%,
+                rgba(255, 255, 255, 0.05) 50%,
+                rgba(var(--dynamic-r), var(--dynamic-g), var(--dynamic-b), 0.2) 100%
             );
-            border-color: rgba(255, 255, 255, 0.35);
+            border-color: rgba(255, 255, 255, 0.3);
             box-shadow:
-                0 12px 40px rgba(0, 0, 0, 0.4),
-                inset 0 1px 0 rgba(255, 255, 255, 0.15),
-                0 0 30px rgba(var(--dynamic-r), var(--dynamic-g), var(--dynamic-b), 0.3);
+                0 12px 32px rgba(0, 0, 0, 0.5),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3),
+                0 0 25px rgba(var(--dynamic-r), var(--dynamic-g), var(--dynamic-b), 0.25);
             transform: translateY(-2px);
         }
         .btn-glass:hover::before {
@@ -267,6 +259,30 @@
         .btn-glass > * {
             position: relative;
             z-index: 1;
+        }
+        
+        /* Modern Bento Box & Tile Styles */
+        .glass-tile {
+            background: linear-gradient(145deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.05);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        .glass-tile::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(800px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), 
+                        rgba(var(--dynamic-r), var(--dynamic-g), var(--dynamic-b), 0.06),
+                        transparent 40%);
+            opacity: 0;
+            transition: opacity 0.5s;
+            pointer-events: none;
+        }
+        .glass-tile:hover::before {
+            opacity: 1;
         }
         /* Navigation Styles */
         .nav-link {
@@ -475,14 +491,14 @@
         <!-- Header -->
         <header class="py-6 px-6 md:px-12 lg:px-20">
             <nav class="flex items-center justify-between">
-                <a href="/" data-href="/" class="flex items-center space-x-3">
+                <a href="/" data-href="/" class="flex items-center space-x-3 group">
                     <!-- Logo mark -->
-                    <div class="w-10 h-10 bg-gradient-to-br from-dynamic-accent to-dynamic-accent-dark rounded-lg flex items-center justify-center">
-                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                    <div class="w-10 h-10 bg-gradient-to-br from-dynamic-accent to-dynamic-accent-dark rounded-xl flex items-center justify-center shadow-dynamic-accent border border-white/10 group-hover:scale-105 transition-transform duration-300">
+                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z"/>
                         </svg>
                     </div>
-                    <span class="text-xl font-semibold text-white tracking-tight">
+                    <span class="text-2xl font-display font-semibold text-white tracking-tight">
                         Federal<span class="text-dynamic-accent">Innovations</span>
                     </span>
                 </a>
@@ -581,6 +597,18 @@
     <script src="/js/meta-manager.js"></script>
     <!-- SPA Router -->
     <script src="/js/spa-router.js"></script>
+    <!-- Add Mouse Tracking for Glass Tiles -->
+    <script>
+        document.addEventListener('mousemove', e => {
+            document.querySelectorAll('.glass-tile').forEach(tile => {
+                const rect = tile.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                tile.style.setProperty('--mouse-x', `${x}px`);
+                tile.style.setProperty('--mouse-y', `${y}px`);
+            });
+        });
+    </script>
     <!-- Service Worker Registration -->
     <script>
         if ('serviceWorker' in navigator) {
