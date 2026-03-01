@@ -48,6 +48,12 @@
       description: 'Technical advisory services for software, AI, and government contracting',
       canonical: 'https://technical-advisory.federalinnovations.com/',
       ogUrl: 'https://technical-advisory.federalinnovations.com/'
+    },
+    'pages/colors.html': {
+      title: 'Colors | Federal Innovations',
+      description: 'The primary colors cycling through the Federal Innovations background',
+      canonical: 'https://colors.federalinnovations.com/',
+      ogUrl: 'https://colors.federalinnovations.com/'
     }
   };
 
