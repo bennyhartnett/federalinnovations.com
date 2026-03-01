@@ -1,0 +1,209 @@
+<style>
+    .color-swatch {
+        width: 100%;
+        aspect-ratio: 1;
+        border-radius: 16px;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+    }
+    .color-swatch:hover {
+        transform: scale(1.05);
+    }
+    .color-swatch::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        border-radius: 16px;
+        border: 1px solid rgba(255,255,255,0.1);
+        pointer-events: none;
+    }
+    .color-label {
+        font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, monospace;
+        font-size: 0.875rem;
+        color: #a3a3a3;
+        margin-top: 12px;
+    }
+    .color-name {
+        font-size: 1.125rem;
+        font-weight: 600;
+        color: #ffffff;
+        margin-bottom: 4px;
+    }
+    .live-swatch {
+        width: 100%;
+        height: 120px;
+        border-radius: 16px;
+        position: relative;
+        overflow: hidden;
+        transition: box-shadow 0.3s ease;
+    }
+    .live-swatch::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        border-radius: 16px;
+        border: 1px solid rgba(255,255,255,0.1);
+        pointer-events: none;
+    }
+    .copied-toast {
+        position: fixed;
+        bottom: 2rem;
+        left: 50%;
+        transform: translateX(-50%) translateY(100px);
+        background: rgba(26,26,26,0.95);
+        border: 1px solid rgba(255,255,255,0.15);
+        color: #fff;
+        padding: 10px 24px;
+        border-radius: 12px;
+        font-size: 0.875rem;
+        font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, monospace;
+        backdrop-filter: blur(12px);
+        z-index: 1000;
+        opacity: 0;
+        transition: transform 0.3s ease, opacity 0.3s ease;
+        pointer-events: none;
+    }
+    .copied-toast.show {
+        transform: translateX(-50%) translateY(0);
+        opacity: 1;
+    }
+</style>
+
+<div class="max-w-4xl mx-auto">
+    <!-- Hero Section -->
+    <div class="text-center mb-16">
+        <div class="reveal inline-flex items-center space-x-2 bg-fi-gray/50 border border-white/10 rounded-full px-4 py-2 mb-8 backdrop-blur-sm">
+            <svg class="w-5 h-5 text-dynamic-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"/>
+            </svg>
+            <span class="text-sm text-white font-medium tracking-wide uppercase">Brand Palette</span>
+        </div>
+        <h1 class="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight mb-6 reveal reveal-delay-1">
+            <span class="gradient-text">Colors</span>
+        </h1>
+        <div class="w-24 h-1 glow-line shimmer-line mx-auto mb-8 rounded-full reveal reveal-delay-2"></div>
+        <p class="text-lg md:text-xl text-white max-w-3xl mx-auto leading-relaxed reveal reveal-delay-2">
+            The primary colors cycling through the background right now.
+        </p>
+    </div>
+
+    <!-- Live Current Color -->
+    <div class="mb-16 reveal reveal-delay-1">
+        <div class="p-8 bg-fi-gray/30 border border-white/5 rounded-2xl backdrop-blur-sm">
+            <h2 class="text-xl font-semibold text-white mb-2">Current Color</h2>
+            <p class="text-sm text-neutral-400 mb-6">Interpolated live from the palette below</p>
+            <div id="live-color-swatch" class="live-swatch mb-4"></div>
+            <div class="flex items-center justify-between">
+                <span id="live-hex" class="color-label cursor-pointer hover:text-white transition-colors" title="Click to copy"></span>
+                <span id="live-rgb" class="color-label"></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Palette Colors -->
+    <div class="mb-16 reveal reveal-delay-2">
+        <div class="p-8 bg-fi-gray/30 border border-white/5 rounded-2xl backdrop-blur-sm">
+            <h2 class="text-xl font-semibold text-white mb-2">Palette</h2>
+            <p class="text-sm text-neutral-400 mb-8">The background continuously cycles through these colors</p>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-8" id="palette-grid">
+                <!-- Purple -->
+                <div class="text-center">
+                    <div class="color-swatch" style="background: #8b5cf6; box-shadow: 0 8px 32px rgba(139,92,246,0.3);" data-hex="#8b5cf6" title="Click to copy"></div>
+                    <div class="mt-4">
+                        <div class="color-name">Purple</div>
+                        <div class="color-label cursor-pointer hover:text-white transition-colors" data-hex="#8b5cf6" title="Click to copy">#8b5cf6</div>
+                        <div class="color-label">rgb(139, 92, 246)</div>
+                    </div>
+                </div>
+                <!-- Blue -->
+                <div class="text-center">
+                    <div class="color-swatch" style="background: #3b82f6; box-shadow: 0 8px 32px rgba(59,130,246,0.3);" data-hex="#3b82f6" title="Click to copy"></div>
+                    <div class="mt-4">
+                        <div class="color-name">Blue</div>
+                        <div class="color-label cursor-pointer hover:text-white transition-colors" data-hex="#3b82f6" title="Click to copy">#3b82f6</div>
+                        <div class="color-label">rgb(59, 130, 246)</div>
+                    </div>
+                </div>
+                <!-- Amber -->
+                <div class="text-center">
+                    <div class="color-swatch" style="background: #f59e0b; box-shadow: 0 8px 32px rgba(245,158,11,0.3);" data-hex="#f59e0b" title="Click to copy"></div>
+                    <div class="mt-4">
+                        <div class="color-name">Amber</div>
+                        <div class="color-label cursor-pointer hover:text-white transition-colors" data-hex="#f59e0b" title="Click to copy">#f59e0b</div>
+                        <div class="color-label">rgb(245, 158, 11)</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Copied toast -->
+<div id="copied-toast" class="copied-toast">Copied!</div>
+
+<script>
+(function() {
+    'use strict';
+
+    var liveSwatch = document.getElementById('live-color-swatch');
+    var liveHex = document.getElementById('live-hex');
+    var liveRgb = document.getElementById('live-rgb');
+    var toast = document.getElementById('copied-toast');
+    var toastTimer;
+
+    function toHex(r, g, b) {
+        return '#' + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+    }
+
+    function updateLiveColor() {
+        var style = getComputedStyle(document.documentElement);
+        var r = parseInt(style.getPropertyValue('--dynamic-r')) || 0;
+        var g = parseInt(style.getPropertyValue('--dynamic-g')) || 0;
+        var b = parseInt(style.getPropertyValue('--dynamic-b')) || 0;
+        var hex = toHex(r, g, b);
+
+        if (liveSwatch) {
+            liveSwatch.style.background = hex;
+            liveSwatch.style.boxShadow = '0 8px 32px rgba(' + r + ',' + g + ',' + b + ',0.35)';
+        }
+        if (liveHex) {
+            liveHex.textContent = hex;
+            liveHex.setAttribute('data-hex', hex);
+        }
+        if (liveRgb) {
+            liveRgb.textContent = 'rgb(' + r + ', ' + g + ', ' + b + ')';
+        }
+
+        requestAnimationFrame(updateLiveColor);
+    }
+
+    requestAnimationFrame(updateLiveColor);
+
+    function showToast(text) {
+        toast.textContent = text;
+        toast.classList.add('show');
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(function() {
+            toast.classList.remove('show');
+        }, 1500);
+    }
+
+    function copyHex(hex) {
+        if (navigator.clipboard) {
+            navigator.clipboard.writeText(hex).then(function() {
+                showToast('Copied ' + hex);
+            });
+        }
+    }
+
+    // Click-to-copy on swatches and hex labels
+    document.querySelectorAll('.color-swatch[data-hex], .color-label[data-hex], #live-hex').forEach(function(el) {
+        el.addEventListener('click', function() {
+            var hex = el.getAttribute('data-hex');
+            if (hex) copyHex(hex);
+        });
+    });
+})();
+</script>

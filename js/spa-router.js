@@ -17,7 +17,8 @@
     'past-performance':   'pages/past-performance.html',
     'software-engineering': 'pages/software-engineering.html',
     'ai-systems':         'pages/ai-systems.html',
-    'technical-advisory': 'pages/technical-advisory.html'
+    'technical-advisory': 'pages/technical-advisory.html',
+    'colors':             'pages/colors.html'
   };
 
   // Paths that should be left to default browser behaviour
