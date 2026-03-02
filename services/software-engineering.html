@@ -115,6 +115,8 @@
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
+        h1, h2, h3, h4, h5, h6, p, a, span, li, label, blockquote { mix-blend-mode: difference; color: white; }
+        .gradient-text, [class*="bg-clip-text"], .text-dynamic-accent, svg, svg *, input, select, textarea, .btn-glass::before { mix-blend-mode: normal; }
         .glow-line { background: linear-gradient(90deg, transparent, var(--dynamic-color), transparent); }
         .parallax-container { perspective: 1000px; transform-style: preserve-3d; }
         .parallax-layer { will-change: transform; transition: transform 0.1s cubic-bezier(0.25, 0.46, 0.45, 0.94); }
@@ -157,8 +159,8 @@
         .hover\:bg-dynamic-accent-dark:hover { background-color: rgba(var(--dynamic-r), var(--dynamic-g), var(--dynamic-b), 0.85); }
         /* Glassmorphic Button Styles */
         @keyframes glisten { 0% { left: -100%; } 50%, 100% { left: 100%; } }
-        @keyframes borderGlow { 0%, 100% { border-color: rgba(255, 255, 255, 0.2); } 50% { border-color: rgba(255, 255, 255, 0.4); } }
-        .btn-glass { position: relative; background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 50%, rgba(var(--dynamic-r), var(--dynamic-g), var(--dynamic-b), 0.15) 100%); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.2); box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 0 20px rgba(var(--dynamic-r), var(--dynamic-g), var(--dynamic-b), 0.15); overflow: hidden; animation: borderGlow 3s ease-in-out infinite; }
+        @keyframes borderGlow { 0%, 100% { border-color: rgba(255, 255, 255, 0.25); } 50% { border-color: rgba(255, 255, 255, 0.45); } }
+        .btn-glass { position: relative; background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 50%, rgba(var(--dynamic-r), var(--dynamic-g), var(--dynamic-b), 0.15) 100%); backdrop-filter: blur(32px) saturate(1.3); -webkit-backdrop-filter: blur(32px) saturate(1.3); border: 1px solid rgba(255, 255, 255, 0.25); box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 0 20px rgba(var(--dynamic-r), var(--dynamic-g), var(--dynamic-b), 0.15); overflow: hidden; animation: borderGlow 3s ease-in-out infinite; }
         .btn-glass::before { content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.4) 50%, transparent 100%); animation: glisten 3s ease-in-out infinite; pointer-events: none; }
         .btn-glass::after { content: ''; position: absolute; inset: 0; background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, transparent 50%); pointer-events: none; }
         .btn-glass:hover { background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.08) 50%, rgba(var(--dynamic-r), var(--dynamic-g), var(--dynamic-b), 0.25) 100%); border-color: rgba(255, 255, 255, 0.35); box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 0 30px rgba(var(--dynamic-r), var(--dynamic-g), var(--dynamic-b), 0.3); transform: translateY(-2px); }
@@ -173,8 +175,9 @@
         .dropdown { position: relative; }
         .dropdown-menu {
             position: absolute; top: 100%; left: 0; min-width: 280px;
-            background: rgba(17, 17, 17, 0.95); backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px;
+            background: rgba(17, 17, 17, 0.88); backdrop-filter: blur(30px) saturate(1.2);
+            -webkit-backdrop-filter: blur(30px) saturate(1.2);
+            border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 12px;
             padding: 8px; margin-top: 12px; opacity: 0; visibility: hidden;
             transform: translateY(-10px); transition: all 0.3s ease; z-index: 100;
         }
@@ -198,7 +201,7 @@
             .mobile-menu-btn.active span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
             .mobile-menu {
                 position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-                background: rgba(10, 10, 10, 0.98); backdrop-filter: blur(20px); z-index: 50;
+                background: rgba(10, 10, 10, 0.92); backdrop-filter: blur(40px) saturate(1.2); -webkit-backdrop-filter: blur(40px) saturate(1.2); z-index: 50;
                 display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 24px;
                 opacity: 0; visibility: hidden; transition: all 0.3s ease;
             }
