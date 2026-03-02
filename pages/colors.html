@@ -22,7 +22,7 @@
     .color-label {
         font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, monospace;
         font-size: 0.875rem;
-        color: #a3a3a3;
+        color: #ffffff;
         margin-top: 12px;
     }
     .color-name {
@@ -90,10 +90,48 @@
     <!-- Live Sampled Colors -->
     <div class="mb-16 reveal reveal-delay-1">
         <div class="p-8 bg-fi-gray/30 border border-white/5 rounded-2xl backdrop-blur-sm">
-            <div class="flex items-center justify-between mb-8">
-                <div>
-                    <h2 class="text-xl font-semibold text-white mb-1">Primary Colors</h2>
-                    <p class="text-sm text-neutral-400">Sampled from the WebGL background &mdash; updates every second</p>
+            <h2 class="text-xl font-semibold text-white mb-2">Current Color</h2>
+            <p class="text-sm text-white mb-6">Interpolated live from the palette below</p>
+            <div id="live-color-swatch" class="live-swatch mb-4"></div>
+            <div class="flex items-center justify-between">
+                <span id="live-hex" class="color-label cursor-pointer hover:text-white transition-colors" title="Click to copy"></span>
+                <span id="live-rgb" class="color-label"></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Palette Colors -->
+    <div class="mb-16 reveal reveal-delay-2">
+        <div class="p-8 bg-fi-gray/30 border border-white/5 rounded-2xl backdrop-blur-sm">
+            <h2 class="text-xl font-semibold text-white mb-2">Palette</h2>
+            <p class="text-sm text-white mb-8">The background continuously cycles through these colors</p>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-8" id="palette-grid">
+                <!-- Purple -->
+                <div class="text-center">
+                    <div class="color-swatch" style="background: #8b5cf6; box-shadow: 0 8px 32px rgba(139,92,246,0.3);" data-hex="#8b5cf6" title="Click to copy"></div>
+                    <div class="mt-4">
+                        <div class="color-name">Purple</div>
+                        <div class="color-label cursor-pointer hover:text-white transition-colors" data-hex="#8b5cf6" title="Click to copy">#8b5cf6</div>
+                        <div class="color-label">rgb(139, 92, 246)</div>
+                    </div>
+                </div>
+                <!-- Blue -->
+                <div class="text-center">
+                    <div class="color-swatch" style="background: #3b82f6; box-shadow: 0 8px 32px rgba(59,130,246,0.3);" data-hex="#3b82f6" title="Click to copy"></div>
+                    <div class="mt-4">
+                        <div class="color-name">Blue</div>
+                        <div class="color-label cursor-pointer hover:text-white transition-colors" data-hex="#3b82f6" title="Click to copy">#3b82f6</div>
+                        <div class="color-label">rgb(59, 130, 246)</div>
+                    </div>
+                </div>
+                <!-- Amber -->
+                <div class="text-center">
+                    <div class="color-swatch" style="background: #f59e0b; box-shadow: 0 8px 32px rgba(245,158,11,0.3);" data-hex="#f59e0b" title="Click to copy"></div>
+                    <div class="mt-4">
+                        <div class="color-name">Amber</div>
+                        <div class="color-label cursor-pointer hover:text-white transition-colors" data-hex="#f59e0b" title="Click to copy">#f59e0b</div>
+                        <div class="color-label">rgb(245, 158, 11)</div>
+                    </div>
                 </div>
                 <div id="sampling-indicator" class="w-2.5 h-2.5 rounded-full bg-green-500 animate-pulse" title="Sampling active"></div>
             </div>
