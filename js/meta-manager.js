@@ -54,6 +54,12 @@
       description: 'The primary colors cycling through the Federal Innovations background',
       canonical: 'https://colors.federalinnovations.com/',
       ogUrl: 'https://colors.federalinnovations.com/'
+    },
+    'pages/test.html': {
+      title: 'Test | Federal Innovations',
+      description: 'Test subdomain page for Federal Innovations',
+      canonical: 'https://test.federalinnovations.com/',
+      ogUrl: 'https://test.federalinnovations.com/'
     }
   };
 

@@ -18,7 +18,8 @@
     'software-engineering': 'pages/software-engineering.html',
     'ai-systems':         'pages/ai-systems.html',
     'technical-advisory': 'pages/technical-advisory.html',
-    'colors':             'pages/colors.html'
+    'colors':             'pages/colors.html',
+    'test':               'pages/test.html'
   };
 
   // Paths that should be left to default browser behaviour
