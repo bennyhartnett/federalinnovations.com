@@ -89,21 +89,69 @@
             0% { background-position: -200% center; }
             100% { background-position: 200% center; }
         }
-        .gradient-text {
-            background: linear-gradient(135deg, #ffffff 0%, #ffffff 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        /* Negative text: color-shifts against background */
-        h1, h2, h3, h4, h5, h6, p, a, span, li, label, blockquote {
+        /* Strict negative text rendering: white source + difference blend */
+        .fi-negative-root h1,
+        .fi-negative-root h2,
+        .fi-negative-root h3,
+        .fi-negative-root h4,
+        .fi-negative-root h5,
+        .fi-negative-root h6,
+        .fi-negative-root p,
+        .fi-negative-root a,
+        .fi-negative-root span,
+        .fi-negative-root li,
+        .fi-negative-root label,
+        .fi-negative-root blockquote,
+        .fi-negative-root button,
+        .fi-negative-root .text-white,
+        .fi-negative-root [class*="text-white"],
+        .fi-negative-root .text-transparent,
+        .fi-negative-root [class*="text-transparent"],
+        .fi-negative-root .text-dynamic-accent,
+        .fi-negative-root [class*="text-dynamic-accent"] {
             mix-blend-mode: difference;
-            color: white;
+            color: #ffffff !important;
+            -webkit-text-fill-color: #ffffff !important;
+        }
+        /* Neutralize gradient/clip fills so inverse math is exact */
+        .fi-negative-root .gradient-text,
+        .fi-negative-root .bg-clip-text,
+        .fi-negative-root [class*="bg-clip-text"] {
+            background: none !important;
+            background-image: none !important;
+            -webkit-background-clip: border-box !important;
+            background-clip: border-box !important;
+            color: #ffffff !important;
+            -webkit-text-fill-color: #ffffff !important;
+            mix-blend-mode: difference !important;
         }
         /* Exclusions from blend */
-        .gradient-text, [class*="bg-clip-text"], .text-dynamic-accent,
-        svg, svg *, input, select, textarea, .btn-glass::before, .btn-glass::after {
-            mix-blend-mode: normal;
+        .fi-negative-root svg,
+        .fi-negative-root svg *,
+        .fi-negative-root input,
+        .fi-negative-root select,
+        .fi-negative-root textarea,
+        .fi-negative-root .btn-glass::before,
+        .fi-negative-root .btn-glass::after {
+            mix-blend-mode: normal !important;
+        }
+        /* Keep form control text readable and not inverted */
+        .fi-negative-root input,
+        .fi-negative-root select,
+        .fi-negative-root textarea {
+            color: #ffffff !important;
+            -webkit-text-fill-color: #ffffff !important;
+        }
+        .fi-negative-root input::placeholder,
+        .fi-negative-root textarea::placeholder {
+            color: rgba(255, 255, 255, 0.5) !important;
+        }
+        /* Optional future opt-out */
+        .fi-negative-root .fi-negative-text-exempt,
+        .fi-negative-root .fi-negative-text-exempt * {
+            mix-blend-mode: normal !important;
+            color: inherit !important;
+            -webkit-text-fill-color: currentColor !important;
         }
         .glow-line {
             background: linear-gradient(90deg, transparent, var(--dynamic-color), transparent);
@@ -500,7 +548,7 @@
     <!-- WebGL particle background -->
     <canvas id="canvas" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none;"></canvas>
 
-    <div class="relative z-10 min-h-screen flex flex-col">
+    <div class="relative z-10 min-h-screen flex flex-col fi-negative-root">
         <!-- Header -->
         <header class="py-6 px-6 md:px-12 lg:px-20">
             <nav class="flex items-center justify-between">
