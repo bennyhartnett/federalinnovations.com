@@ -58,19 +58,19 @@
       return nameToPage(redirect);
     }
 
-    // 3. URL pathname (e.g. /contact)
+    // 3. URL hash (e.g. #contact)
+    var hash = location.hash.replace(/^#\/?/, '');
+    if (hash) {
+      return nameToPage(hash);
+    }
+
+    // 4. URL pathname (e.g. /contact)
     var pathname = location.pathname;
-    if (pathname && pathname !== '/') {
+    if (pathname && pathname !== '/' && pathname !== '/index.html' && pathname !== '/home.html') {
       var segment = pathname.split('/').filter(Boolean)[0];
       if (segment) {
         return nameToPage(segment);
       }
-    }
-
-    // 4. URL hash (e.g. #contact)
-    var hash = location.hash.replace(/^#\/?/, '');
-    if (hash) {
-      return nameToPage(hash);
     }
 
     // 5. Default
