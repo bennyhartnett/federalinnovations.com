@@ -13,16 +13,23 @@
     let mouseX = 0, mouseY = 0;
     let currentMouseX = 0, currentMouseY = 0;
     let scrollY = 0;
+    let currentScrollY = 0;
     let ticking = false;
 
-    // Elements
-    const parallaxLayers = document.querySelectorAll('.parallax-layer');
-    const revealElements = document.querySelectorAll('.reveal');
-    const tiltCards = document.querySelectorAll('[data-tilt]');
+    // Elements are injected by the SPA router, so keep these references refreshable.
+    let parallaxLayers = [];
+    let revealElements = [];
+    let tiltCards = [];
 
     // Smooth lerp function
     function lerp(start, end, factor) {
         return start + (end - start) * factor;
+    }
+
+    function refreshTrackedElements() {
+        parallaxLayers = Array.from(document.querySelectorAll('.parallax-layer'));
+        revealElements = Array.from(document.querySelectorAll('.reveal'));
+        tiltCards = Array.from(document.querySelectorAll('[data-tilt]'));
     }
 
     // Handle mouse movement
@@ -57,16 +64,23 @@
     function updateMouseParallax() {
         currentMouseX = lerp(currentMouseX, mouseX, config.smoothing);
         currentMouseY = lerp(currentMouseY, mouseY, config.smoothing);
+        currentScrollY = lerp(currentScrollY, scrollY, config.smoothing);
 
         const centerX = window.innerWidth / 2;
         const centerY = window.innerHeight / 2;
         const offsetX = (currentMouseX - centerX) / centerX;
         const offsetY = (currentMouseY - centerY) / centerY;
+        const scrollFactor = currentScrollY / Math.max(window.innerHeight, 1);
 
         const intensity = config.mouseParallaxIntensity;
         parallaxLayers.forEach((layer) => {
             const speed = parseFloat(layer.dataset.parallaxSpeed) || 0.5;
-            layer.style.transform = `translate(${offsetX * intensity * speed * 0.3}px, ${offsetY * intensity * speed * 0.3}px)`;
+            const translateX = offsetX * intensity * speed * 0.3;
+            const translateY =
+                offsetY * intensity * speed * 0.3 -
+                scrollFactor * config.scrollParallaxIntensity * speed * 40;
+
+            layer.style.transform = `translate3d(${translateX.toFixed(2)}px, ${translateY.toFixed(2)}px, 0)`;
         });
 
         requestAnimationFrame(updateMouseParallax);
@@ -75,6 +89,12 @@
     // Initialize 3D tilt effect for cards
     function initTiltEffect() {
         tiltCards.forEach((card) => {
+            if (card.dataset.tiltBound === 'true') {
+                return;
+            }
+
+            card.dataset.tiltBound = 'true';
+
             card.addEventListener('mousemove', (e) => {
                 const rect = card.getBoundingClientRect();
                 const x = e.clientX - rect.left;
@@ -93,9 +113,33 @@
         });
     }
 
+    function observePageChanges() {
+        const mainContent = document.getElementById('main-content');
+        if (!mainContent || typeof MutationObserver !== 'function') {
+            return;
+        }
+
+        const observer = new MutationObserver(() => {
+            refreshTrackedElements();
+            initTiltEffect();
+            updateScrollParallax();
+        });
+
+        observer.observe(mainContent, {
+            childList: true,
+            subtree: true
+        });
+    }
+
     // Initialize
     function init() {
+        mouseX = currentMouseX = window.innerWidth / 2;
+        mouseY = currentMouseY = window.innerHeight / 2;
+        scrollY = currentScrollY = window.pageYOffset;
+
+        refreshTrackedElements();
         initTiltEffect();
+        observePageChanges();
 
         document.addEventListener('mousemove', handleMouseMove);
         window.addEventListener('scroll', handleScroll, { passive: true });

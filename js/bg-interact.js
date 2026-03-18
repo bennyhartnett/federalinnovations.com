@@ -1,97 +1,160 @@
-// Background Interaction - Cursor & Scroll Responsiveness
+// Background interaction: pointer and scroll responsive motion
 (function () {
     'use strict';
 
-    // Wait for the particle renderer to be available
+    var CHECK_INTERVAL_MS = 100;
+    var POINTER_STRENGTH = 0.78;
+    var SCROLL_STRENGTH = 0.42;
+    var SCROLL_VELOCITY_STRENGTH = 0.18;
+    var MAX_ATTRACTOR_OFFSET = 0.82;
+    var CANVAS_POINTER_SHIFT = 22;
+    var CANVAS_SCROLL_SHIFT = 32;
+    var CANVAS_BASE_SCALE = 1.06;
+
+    if (typeof ii !== 'undefined' && ii && ii.particleSystem) {
+        initInteraction(ii);
+        return;
+    }
+
     var checkInterval = setInterval(function () {
-        if (typeof ii !== 'undefined' && ii.particleSystem) {
+        if (typeof ii !== 'undefined' && ii && ii.particleSystem) {
             clearInterval(checkInterval);
             initInteraction(ii);
         }
-    }, 100);
+    }, CHECK_INTERVAL_MS);
 
     function initInteraction(renderer) {
-        var ps = renderer.particleSystem;
+        var particleSystem = renderer.particleSystem;
         var canvas = document.getElementById('canvas');
-        if (!ps || !canvas) return;
+        var root = document.documentElement;
 
-        // State
-        var targetX = 0;
-        var targetY = 0;
-        var currentX = 0;
-        var currentY = 0;
-        var scrollOffset = 0;
-        var isMouseOnPage = false;
-        var smoothing = 0.06;
-
-        // Convert screen coordinates to WebGL clip space (-1 to 1)
-        function screenToClip(clientX, clientY) {
-            var rect = canvas.getBoundingClientRect();
-            var x = ((clientX - rect.left) / rect.width) * 2 - 1;
-            var y = -(((clientY - rect.top) / rect.height) * 2 - 1);
-            return { x: x, y: y };
+        if (!particleSystem || !canvas || canvas.dataset.bgInteractive === 'true') {
+            return;
         }
 
-        // Lerp
-        function lerp(a, b, t) {
-            return a + (b - a) * t;
+        canvas.dataset.bgInteractive = 'true';
+        canvas.style.willChange = 'transform, opacity';
+        canvas.style.transformOrigin = 'center center';
+
+        var state = {
+            targetX: 0,
+            targetY: 0,
+            currentX: 0,
+            currentY: 0,
+            scrollTarget: 0,
+            scrollCurrent: 0,
+            scrollVelocityTarget: 0,
+            scrollVelocityCurrent: 0,
+            lastScrollY: window.pageYOffset || window.scrollY || 0,
+            maxScroll: 1
+        };
+
+        function clamp(value, min, max) {
+            return Math.max(min, Math.min(max, value));
         }
 
-        // Mouse move handler
-        document.addEventListener('mousemove', function (e) {
-            isMouseOnPage = true;
-            var clip = screenToClip(e.clientX, e.clientY);
-            targetX = clip.x * 0.85; // Scale down slightly to keep within bounds
-            targetY = clip.y * 0.85;
-        });
+        function lerp(start, end, factor) {
+            return start + (end - start) * factor;
+        }
 
-        // Mouse leave - drift back toward center
-        document.addEventListener('mouseleave', function () {
-            isMouseOnPage = false;
-            targetX = 0;
-            targetY = 0;
-        });
+        function resetPointer() {
+            state.targetX = 0;
+            state.targetY = 0;
+        }
 
-        // Touch support for mobile
-        document.addEventListener('touchmove', function (e) {
-            if (e.touches.length > 0) {
-                var touch = e.touches[0];
-                var clip = screenToClip(touch.clientX, touch.clientY);
-                targetX = clip.x * 0.85;
-                targetY = clip.y * 0.85;
-                isMouseOnPage = true;
+        function updatePointer(clientX, clientY) {
+            var viewportWidth = Math.max(window.innerWidth, 1);
+            var viewportHeight = Math.max(window.innerHeight, 1);
+
+            state.targetX = clamp((clientX / viewportWidth) * 2 - 1, -1, 1);
+            state.targetY = clamp(((clientY / viewportHeight) * 2 - 1) * -1, -1, 1);
+        }
+
+        function syncScrollState() {
+            var nextScrollY = window.pageYOffset || window.scrollY || 0;
+            var scrollFraction = clamp(nextScrollY / state.maxScroll, 0, 1);
+            var delta = nextScrollY - state.lastScrollY;
+
+            state.lastScrollY = nextScrollY;
+            state.scrollTarget = clamp((0.5 - scrollFraction) * 2, -1, 1);
+            state.scrollVelocityTarget = clamp(delta / Math.max(window.innerHeight, 1), -1, 1);
+
+            root.style.setProperty('--fi-scroll-progress', scrollFraction.toFixed(4));
+        }
+
+        function updateScrollBounds() {
+            state.maxScroll = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
+            syncScrollState();
+        }
+
+        function handlePointerMove(event) {
+            updatePointer(event.clientX, event.clientY);
+        }
+
+        function handleTouchMove(event) {
+            if (!event.touches || event.touches.length === 0) {
+                return;
             }
-        }, { passive: true });
 
-        document.addEventListener('touchend', function () {
-            isMouseOnPage = false;
-            targetX = 0;
-            targetY = 0;
+            updatePointer(event.touches[0].clientX, event.touches[0].clientY);
+        }
+
+        updateScrollBounds();
+
+        if (window.PointerEvent) {
+            window.addEventListener('pointermove', handlePointerMove, { passive: true });
+            window.addEventListener('pointerup', resetPointer, { passive: true });
+            window.addEventListener('pointercancel', resetPointer, { passive: true });
+        } else {
+            document.addEventListener('mousemove', handlePointerMove, { passive: true });
+            document.addEventListener('touchmove', handleTouchMove, { passive: true });
+            document.addEventListener('touchend', resetPointer, { passive: true });
+        }
+
+        window.addEventListener('scroll', syncScrollState, { passive: true });
+        window.addEventListener('resize', updateScrollBounds, { passive: true });
+        window.addEventListener('orientationchange', updateScrollBounds, { passive: true });
+        window.addEventListener('blur', resetPointer);
+        window.addEventListener('mouseout', function (event) {
+            if (!event.relatedTarget) {
+                resetPointer();
+            }
         });
 
-        // Scroll handler - shift attractor vertically based on scroll
-        var maxScroll = 1;
-        function updateMaxScroll() {
-            maxScroll = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
-        }
-        updateMaxScroll();
-        window.addEventListener('resize', updateMaxScroll);
-
-        window.addEventListener('scroll', function () {
-            var scrollFraction = window.pageYOffset / maxScroll;
-            // Map scroll to a vertical offset: top of page = slight upward bias, bottom = downward
-            scrollOffset = (scrollFraction - 0.5) * -0.6;
-        }, { passive: true });
-
-        // Animation loop - smoothly interpolate attractor position
         function tick() {
-            var finalTargetY = targetY + scrollOffset;
+            state.currentX = lerp(state.currentX, state.targetX, 0.08);
+            state.currentY = lerp(state.currentY, state.targetY, 0.08);
+            state.scrollCurrent = lerp(state.scrollCurrent, state.scrollTarget, 0.08);
+            state.scrollVelocityCurrent = lerp(state.scrollVelocityCurrent, state.scrollVelocityTarget, 0.12);
+            state.scrollVelocityTarget = lerp(state.scrollVelocityTarget, 0, 0.16);
 
-            currentX = lerp(currentX, targetX, smoothing);
-            currentY = lerp(currentY, finalTargetY, smoothing);
+            var attractorX = clamp(state.currentX * POINTER_STRENGTH, -MAX_ATTRACTOR_OFFSET, MAX_ATTRACTOR_OFFSET);
+            var attractorY = clamp(
+                state.currentY * POINTER_STRENGTH +
+                state.scrollCurrent * SCROLL_STRENGTH -
+                state.scrollVelocityCurrent * SCROLL_VELOCITY_STRENGTH,
+                -MAX_ATTRACTOR_OFFSET,
+                MAX_ATTRACTOR_OFFSET
+            );
 
-            ps.attractorPos.x = currentX;
-            ps.attractorPos.y = currentY;
+            var canvasShiftX = state.currentX * CANVAS_POINTER_SHIFT;
+            var canvasShiftY =
+                state.currentY * (CANVAS_POINTER_SHIFT * 0.7) -
+                state.scrollCurrent * CANVAS_SCROLL_SHIFT -
+                state.scrollVelocityCurrent * 12;
+            var canvasScale = CANVAS_BASE_SCALE + Math.abs(state.scrollVelocityCurrent) * 0.02;
+            var canvasOpacity = 0.92 + Math.min(Math.abs(state.scrollVelocityCurrent) * 0.08, 0.08);
+
+            particleSystem.attractorPos.x = attractorX;
+            particleSystem.attractorPos.y = attractorY;
+
+            canvas.style.transform =
+                'translate3d(' + canvasShiftX.toFixed(2) + 'px, ' + canvasShiftY.toFixed(2) + 'px, 0) ' +
+                'scale(' + canvasScale.toFixed(3) + ')';
+            canvas.style.opacity = canvasOpacity.toFixed(3);
+
+            root.style.setProperty('--fi-bg-shift-x', canvasShiftX.toFixed(2) + 'px');
+            root.style.setProperty('--fi-bg-shift-y', canvasShiftY.toFixed(2) + 'px');
 
             requestAnimationFrame(tick);
         }
