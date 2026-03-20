@@ -20,7 +20,6 @@
     let parallaxLayers = [];
     let revealElements = [];
     let tiltCards = [];
-    let counterObserver = null;
 
     // Smooth lerp function
     function lerp(start, end, factor) {
@@ -31,106 +30,6 @@
         parallaxLayers = Array.from(document.querySelectorAll('.parallax-layer'));
         revealElements = Array.from(document.querySelectorAll('.reveal'));
         tiltCards = Array.from(document.querySelectorAll('[data-tilt]'));
-    }
-
-    function formatCounterNumber(value, decimals) {
-        return value.toLocaleString(undefined, {
-            minimumFractionDigits: decimals,
-            maximumFractionDigits: decimals
-        });
-    }
-
-    function setCounterValue(el, target) {
-        const targetText = String(el.dataset.counterTarget || target || '0');
-        const decimals = Number.isFinite(Number(el.dataset.counterDecimals))
-            ? Number(el.dataset.counterDecimals)
-            : (targetText.includes('.') ? targetText.split('.')[1].length : 0);
-        const prefix = el.dataset.counterPrefix || '';
-        const suffix = el.dataset.counterSuffix || '';
-
-        el.textContent = prefix + formatCounterNumber(target, decimals) + suffix;
-    }
-
-    function animateCounter(el) {
-        if (el.dataset.counterStarted === 'true') {
-            return;
-        }
-
-        const targetText = String(el.dataset.counterTarget || '0');
-        const target = Number(targetText);
-        if (!Number.isFinite(target)) {
-            return;
-        }
-
-        const decimals = Number.isFinite(Number(el.dataset.counterDecimals))
-            ? Number(el.dataset.counterDecimals)
-            : (targetText.includes('.') ? targetText.split('.')[1].length : 0);
-        const prefix = el.dataset.counterPrefix || '';
-        const suffix = el.dataset.counterSuffix || '';
-        const duration = Number(el.dataset.counterDuration) || 1400;
-        const start = performance.now();
-
-        el.dataset.counterStarted = 'true';
-
-        function tick(now) {
-            const progress = Math.min((now - start) / duration, 1);
-            const eased = 1 - Math.pow(1 - progress, 3);
-            const current = target * eased;
-
-            el.textContent =
-                prefix +
-                formatCounterNumber(decimals > 0 ? current : Math.round(current), decimals) +
-                suffix;
-
-            if (progress < 1) {
-                requestAnimationFrame(tick);
-                return;
-            }
-
-            el.textContent = prefix + formatCounterNumber(target, decimals) + suffix;
-        }
-
-        requestAnimationFrame(tick);
-    }
-
-    function initCounterEffect() {
-        const counters = Array.from(document.querySelectorAll('[data-counter-target]'));
-
-        if (counterObserver) {
-            counterObserver.disconnect();
-            counterObserver = null;
-        }
-
-        if (!counters.length) {
-            return;
-        }
-
-        counters.forEach((counter) => {
-            counter.dataset.counterStarted = 'false';
-            counter.textContent = '0';
-        });
-
-        if (typeof IntersectionObserver !== 'function') {
-            counters.forEach((counter) => {
-                setCounterValue(counter, Number(counter.dataset.counterTarget || '0'));
-            });
-            return;
-        }
-
-        counterObserver = new IntersectionObserver((entries) => {
-            entries.forEach((entry) => {
-                if (!entry.isIntersecting) {
-                    return;
-                }
-
-                animateCounter(entry.target);
-                counterObserver.unobserve(entry.target);
-            });
-        }, { threshold: 0.45 });
-
-        counters.forEach((counter) => {
-            counterObserver.observe(counter);
-        });
     }
 
     // Handle mouse movement
@@ -223,7 +122,6 @@
         const observer = new MutationObserver(() => {
             refreshTrackedElements();
             initTiltEffect();
-            initCounterEffect();
             updateScrollParallax();
         });
 
@@ -241,7 +139,6 @@
 
         refreshTrackedElements();
         initTiltEffect();
-        initCounterEffect();
         observePageChanges();
 
         document.addEventListener('mousemove', handleMouseMove);
