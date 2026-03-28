@@ -2,7 +2,10 @@
 <html lang="en">
 <head>
     <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-8GKDJGEP1Q"></script>
+    <!-- NOTE: SRI integrity hashes are not possible for Tailwind CDN (dynamic),
+         gtag (Google-updated), or Google Fonts (dynamic). For production,
+         consider replacing Tailwind CDN with a build-step compiled CSS file. -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-8GKDJGEP1Q" crossorigin="anonymous"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
@@ -24,12 +27,18 @@
     <meta property="og:description" content="Software development, AI modernization and optimization, and government contracting advisory for federal agencies.">
     <meta property="og:site_name" content="Federal Innovations">
     <meta property="og:locale" content="en_US">
+    <meta property="og:image" content="https://federalinnovations.com/og-image.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Federal Innovations - Software development, AI, and government contracting advisory">
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:url" content="https://federalinnovations.com/">
     <meta name="twitter:title" content="Federal Innovations">
     <meta name="twitter:description" content="Software development, AI modernization and optimization, and government contracting advisory for federal agencies.">
+    <meta name="twitter:image" content="https://federalinnovations.com/og-image.png">
+    <meta name="twitter:image:alt" content="Federal Innovations - Software development, AI, and government contracting advisory">
 
     <!-- Additional SEO -->
     <meta name="robots" content="index, follow">
@@ -55,7 +64,7 @@
     </script>
 
     <link rel="icon" type="image/svg+xml" href="/favicon.svg">
-    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.tailwindcss.com" crossorigin="anonymous"></script>
     <script>
         tailwind.config = {
             theme: {
@@ -76,7 +85,7 @@
     </script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" crossorigin="anonymous">
     <style>
         :root {
             --dynamic-r: 249;
@@ -557,11 +566,11 @@
     <div class="relative z-10 min-h-screen flex flex-col fi-negative-root">
         <!-- Header -->
         <header class="py-6 px-6 md:px-12 lg:px-20">
-            <nav class="flex items-center justify-between">
+            <nav class="flex items-center justify-between" role="navigation" aria-label="Main navigation">
                 <a href="/" data-href="/" class="flex items-center space-x-3 group">
                     <!-- Logo mark -->
                     <div class="w-10 h-10 bg-gradient-to-br from-dynamic-accent to-dynamic-accent-dark rounded-xl flex items-center justify-center shadow-dynamic-accent border border-white/10 group-hover:scale-105 transition-transform duration-300">
-                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z"/>
                         </svg>
                     </div>
@@ -576,22 +585,22 @@
 
                     <!-- Services Dropdown -->
                     <div class="dropdown">
-                        <button class="nav-link font-medium flex items-center gap-1" data-page="services">
+                        <button class="nav-link font-medium flex items-center gap-1" data-page="services" aria-expanded="false" aria-haspopup="true" aria-controls="desktopServicesMenu">
                             Services
-                            <svg class="dropdown-chevron w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg class="dropdown-chevron w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
                             </svg>
                         </button>
-                        <div class="dropdown-menu">
-                            <a href="/services/software-engineering.html" data-href="/software-engineering" data-page="software-engineering" class="dropdown-item">
+                        <div class="dropdown-menu" id="desktopServicesMenu" role="menu" aria-label="Services">
+                            <a href="/services/software-engineering.html" data-href="/software-engineering" data-page="software-engineering" class="dropdown-item" role="menuitem">
                                 <div class="font-medium text-white mb-1">Software Engineering</div>
                                 <div class="text-sm text-white">Custom software solutions for federal needs</div>
                             </a>
-                            <a href="/services/ai-systems.html" data-href="/ai-systems" data-page="ai-systems" class="dropdown-item">
+                            <a href="/services/ai-systems.html" data-href="/ai-systems" data-page="ai-systems" class="dropdown-item" role="menuitem">
                                 <div class="font-medium text-white mb-1">AI Systems & Enablement</div>
                                 <div class="text-sm text-white">AI strategy, implementation & optimization</div>
                             </a>
-                            <a href="/services/technical-advisory.html" data-href="/technical-advisory" data-page="technical-advisory" class="dropdown-item">
+                            <a href="/services/technical-advisory.html" data-href="/technical-advisory" data-page="technical-advisory" class="dropdown-item" role="menuitem">
                                 <div class="font-medium text-white mb-1">Technical Advisory</div>
                                 <div class="text-sm text-white">Software, AI & GovCon guidance</div>
                             </a>
@@ -604,7 +613,7 @@
                 </div>
 
                 <!-- Mobile Menu Button -->
-                <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Toggle menu">
+                <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Toggle menu" aria-expanded="false" aria-controls="mobileMenu">
                     <span></span>
                     <span></span>
                     <span></span>
@@ -613,21 +622,21 @@
         </header>
 
         <!-- Mobile Menu -->
-        <div class="mobile-menu" id="mobileMenu">
+        <div class="mobile-menu" id="mobileMenu" role="dialog" aria-label="Mobile navigation menu">
             <a href="/" data-href="/" data-page="home" class="mobile-nav-link">Home</a>
 
             <!-- Mobile Services Dropdown -->
             <div class="text-center">
-                <button class="mobile-nav-link flex items-center gap-2" id="mobileServicesBtn" data-page="services">
+                <button class="mobile-nav-link flex items-center gap-2" id="mobileServicesBtn" data-page="services" aria-expanded="false" aria-haspopup="true" aria-controls="mobileServicesContent">
                     Services
-                    <svg class="dropdown-chevron w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="dropdown-chevron w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
                     </svg>
                 </button>
-                <div class="mobile-dropdown-content" id="mobileServicesContent">
-                    <a href="/services/software-engineering.html" data-href="/software-engineering" data-page="software-engineering" class="mobile-dropdown-item">Software Engineering</a>
-                    <a href="/services/ai-systems.html" data-href="/ai-systems" data-page="ai-systems" class="mobile-dropdown-item">AI Systems & Enablement</a>
-                    <a href="/services/technical-advisory.html" data-href="/technical-advisory" data-page="technical-advisory" class="mobile-dropdown-item">Technical Advisory</a>
+                <div class="mobile-dropdown-content" id="mobileServicesContent" role="menu">
+                    <a href="/services/software-engineering.html" data-href="/software-engineering" data-page="software-engineering" class="mobile-dropdown-item" role="menuitem">Software Engineering</a>
+                    <a href="/services/ai-systems.html" data-href="/ai-systems" data-page="ai-systems" class="mobile-dropdown-item" role="menuitem">AI Systems & Enablement</a>
+                    <a href="/services/technical-advisory.html" data-href="/technical-advisory" data-page="technical-advisory" class="mobile-dropdown-item" role="menuitem">Technical Advisory</a>
                 </div>
             </div>
 
@@ -656,16 +665,23 @@
         </footer>
     </div>
 
-    <!-- WebGL Background -->
-    <script src="/js/bg.js"></script>
-    <!-- Background Cursor & Scroll Interaction -->
-    <script src="/js/bg-interact.js"></script>
+    <!-- WebGL Background (deferred, skipped for prefers-reduced-motion) -->
+    <script>
+      (function() {
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        ['bg.js', 'bg-interact.js'].forEach(function(file) {
+          var s = document.createElement('script');
+          s.src = '/js/' + file;
+          document.body.appendChild(s);
+        });
+      })();
+    </script>
     <!-- Shared JavaScript -->
-    <script src="/js/main.js"></script>
+    <script src="/js/main.js" defer></script>
     <!-- Meta Manager (must load before SPA router) -->
-    <script src="/js/meta-manager.js"></script>
+    <script src="/js/meta-manager.js" defer></script>
     <!-- SPA Router -->
-    <script src="/js/spa-router.js"></script>
+    <script src="/js/spa-router.js" defer></script>
     <!-- Add Mouse Tracking for Glass Tiles -->
     <script>
         document.addEventListener('mousemove', e => {
