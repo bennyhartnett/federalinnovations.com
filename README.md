@@ -1,6 +1,6 @@
 # Federal Innovations
 
-[![GitHub Pages](https://img.shields.io/badge/Hosted%20on-GitHub%20Pages-blue?logo=github)](https://federalinnovations.com)
+[![Cloudflare Pages](https://img.shields.io/badge/Hosted%20on-Cloudflare-orange?logo=cloudflare)](https://federalinnovations.com)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
 > Driving Innovation in Government Technology
@@ -19,17 +19,44 @@ Visit our website at [federalinnovations.com](https://federalinnovations.com)
 
 ## Tech Stack
 
-- **Vanilla JavaScript** — Single-page application with client-side routing
+- **Vanilla JavaScript** — Single-page application with client-side routing and fragment loading
 - **Tailwind CSS** — Utility-first styling via CDN
 - **Google Fonts** — Inter and Outfit typefaces
-- **GitHub Pages** — Static hosting with custom domain
+- **Cloudflare Workers** — Edge routing with subdomain-based navigation
+- **Service Worker** — Offline-capable with static asset pre-caching
 
 ### Features
 
+- Client-side SPA router with history API, link prefetching, and page transitions
+- Subdomain routing via Cloudflare Worker (e.g., `software-engineering.federalinnovations.com`)
 - Mouse-based parallax effects and scroll-triggered animations
 - Glassmorphism UI with dark theme
 - Responsive bento-grid layouts
 - Card tilt effects on hover
+
+## Project Structure
+
+```
+├── index.html              # Main shell / entry point
+├── pages/                  # HTML fragments loaded by the SPA router
+│   ├── home.html
+│   ├── software-engineering.html
+│   ├── ai-systems.html
+│   ├── technical-advisory.html
+│   ├── past-performance.html
+│   ├── partners.html
+│   └── contact.html
+├── js/
+│   ├── spa-router.js       # Client-side routing and fragment loading
+│   ├── main.js             # Core site logic
+│   ├── bg.js               # Background canvas effects
+│   ├── bg-interact.js      # Interactive background mouse tracking
+│   └── meta-manager.js     # Dynamic meta tag management
+├── workers/
+│   └── router.js           # Cloudflare Worker for subdomain routing
+├── sw.js                   # Service worker for offline caching
+└── wrangler.toml           # Cloudflare Workers configuration
+```
 
 ## Development
 
@@ -43,25 +70,28 @@ python -m http.server 8000
 
 # Using Node.js
 npx serve
+
+# Using Cloudflare Wrangler (for testing worker routing)
+npx wrangler dev
 ```
 
 Then visit `http://localhost:8000` in your browser.
 
 ### Deployment
 
-The site automatically deploys to GitHub Pages when changes are pushed to the `main` branch. The custom domain is configured via the `CNAME` file.
+The site deploys to Cloudflare Pages when changes are pushed to the `main` branch. A Cloudflare Worker handles subdomain routing, mapping subdomains like `ai-systems.federalinnovations.com` to the corresponding page fragment.
 
 ## Pages
 
-| Page | Description |
-|------|-------------|
-| Home | Hero landing with service overview |
-| Software Engineering | Full-stack and cloud-native development services |
-| AI Systems & Enablement | AI strategy, LLM integration, and optimization |
-| Technical Advisory | Government contracting expertise |
-| Past Performance | Case studies and portfolio |
-| Partners | Partnership and integration information |
-| Contact | Inquiry and contact forms |
+| Page | Route | Description |
+|------|-------|-------------|
+| Home | `/` | Hero landing with service overview |
+| Software Engineering | `/software-engineering` | Full-stack and cloud-native development services |
+| AI Systems & Enablement | `/ai-systems` | AI strategy, LLM integration, and optimization |
+| Technical Advisory | `/technical-advisory` | Government contracting expertise |
+| Past Performance | `/past-performance` | Case studies and portfolio |
+| Partners | `/partners` | Partnership and integration information |
+| Contact | `/contact` | Inquiry and contact forms |
 
 ## Contributing
 
