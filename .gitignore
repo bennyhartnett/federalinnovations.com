@@ -28,7 +28,6 @@ vendor/
 dist/
 build/
 .cache/
-css/styles.css
 
 # Environment files
 .env

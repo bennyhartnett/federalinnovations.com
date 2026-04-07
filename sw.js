@@ -1,7 +1,8 @@
-const CACHE_VERSION = 'fi-v4';
+const CACHE_VERSION = 'fi-v5-hotfix1';
 const STATIC_ASSETS = [
     '/',
     '/index.html',
+    '/css/styles.css?v=20260407-hotfix1',
     '/js/bg.js',
     '/js/bg-interact.js',
     '/js/main.js',
@@ -17,6 +18,16 @@ const STATIC_ASSETS = [
     '/pages/technical-advisory.html',
     '/pages/colors.html'
 ];
+
+function cacheResponseIfOk(request, response) {
+    if (!response || !response.ok) {
+        return response;
+    }
+
+    const clone = response.clone();
+    caches.open(CACHE_VERSION).then((cache) => cache.put(request, clone));
+    return response;
+}
 
 // Install - pre-cache static assets
 self.addEventListener('install', (event) => {
@@ -50,11 +61,7 @@ self.addEventListener('fetch', (event) => {
     if (url.pathname.endsWith('.html') || url.pathname.endsWith('.js') || url.pathname.endsWith('.css') || url.pathname === '/') {
         event.respondWith(
             fetch(event.request)
-                .then((response) => {
-                    const clone = response.clone();
-                    caches.open(CACHE_VERSION).then((cache) => cache.put(event.request, clone));
-                    return response;
-                })
+                .then((response) => cacheResponseIfOk(event.request, response))
                 .catch(() => caches.match(event.request))
         );
         return;
@@ -66,11 +73,7 @@ self.addEventListener('fetch', (event) => {
             caches.match(event.request)
                 .then((cached) => {
                     if (cached) return cached;
-                    return fetch(event.request).then((response) => {
-                        const clone = response.clone();
-                        caches.open(CACHE_VERSION).then((cache) => cache.put(event.request, clone));
-                        return response;
-                    });
+                    return fetch(event.request).then((response) => cacheResponseIfOk(event.request, response));
                 })
         );
         return;
@@ -83,11 +86,7 @@ self.addEventListener('fetch', (event) => {
                 .then((cached) => {
                     if (cached) return cached;
                     return fetch(event.request).then((response) => {
-                        if (response.ok) {
-                            const clone = response.clone();
-                            caches.open(CACHE_VERSION).then((cache) => cache.put(event.request, clone));
-                        }
-                        return response;
+                        return cacheResponseIfOk(event.request, response);
                     });
                 })
         );
