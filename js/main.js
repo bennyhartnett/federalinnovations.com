@@ -144,9 +144,7 @@
         document.addEventListener('mousemove', handleMouseMove);
         window.addEventListener('scroll', handleScroll, { passive: true });
 
-        if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-            requestAnimationFrame(updateMouseParallax);
-        }
+        requestAnimationFrame(updateMouseParallax);
         handleScroll();
 
         setTimeout(() => {
@@ -250,16 +248,7 @@ function shadeColor(color, percent) {
         requestAnimationFrame(animate);
     }
 
-    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-        requestAnimationFrame(animate);
-    } else {
-        var color = colorPalette[0];
-        document.documentElement.style.setProperty('--dynamic-r', color.r);
-        document.documentElement.style.setProperty('--dynamic-g', color.g);
-        document.documentElement.style.setProperty('--dynamic-b', color.b);
-        document.documentElement.style.setProperty('--dynamic-color-hex', toHex(color));
-        updateFavicon(toHex(color));
-    }
+    requestAnimationFrame(animate);
 })();
 
 // Mobile Menu JavaScript
@@ -277,44 +266,45 @@ function shadeColor(color, percent) {
         mobileMenuBtn.addEventListener('click', function() {
             this.classList.toggle('active');
             mobileMenu.classList.toggle('active');
-            var isOpen = mobileMenu.classList.contains('active');
-            document.body.style.overflow = isOpen ? 'hidden' : '';
-            this.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+            document.body.style.overflow = mobileMenu.classList.contains('active') ? 'hidden' : '';
         });
     }
 
     if (mobileServicesBtn && mobileServicesContent) {
         mobileServicesBtn.addEventListener('click', function() {
             mobileServicesContent.classList.toggle('active');
-            var isExpanded = mobileServicesContent.classList.contains('active');
-            this.setAttribute('aria-expanded', isExpanded ? 'true' : 'false');
             const chevron = this.querySelector('.dropdown-chevron');
             if (chevron) {
-                chevron.style.transform = isExpanded ? 'rotate(180deg)' : '';
+                chevron.style.transform = mobileServicesContent.classList.contains('active') ? 'rotate(180deg)' : '';
             }
         });
     }
 
-    function closeMobileMenu() {
-        if (mobileMenuBtn && mobileMenu) {
-            mobileMenuBtn.classList.remove('active');
-            mobileMenu.classList.remove('active');
-            mobileMenuBtn.setAttribute('aria-expanded', 'false');
-            document.body.style.overflow = '';
-        }
-    }
-
     mobileNavLinks.forEach(link => {
-        link.addEventListener('click', closeMobileMenu);
+        link.addEventListener('click', function() {
+            if (mobileMenuBtn && mobileMenu) {
+                mobileMenuBtn.classList.remove('active');
+                mobileMenu.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+        });
     });
 
     mobileDropdownItems.forEach(item => {
-        item.addEventListener('click', closeMobileMenu);
+        item.addEventListener('click', function() {
+            if (mobileMenuBtn && mobileMenu) {
+                mobileMenuBtn.classList.remove('active');
+                mobileMenu.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+        });
     });
 
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape' && mobileMenu && mobileMenu.classList.contains('active')) {
-            closeMobileMenu();
+            mobileMenuBtn.classList.remove('active');
+            mobileMenu.classList.remove('active');
+            document.body.style.overflow = '';
         }
     });
 })();

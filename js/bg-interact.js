@@ -16,13 +16,10 @@
         return;
     }
 
-    var retries = 0;
     var checkInterval = setInterval(function () {
         if (typeof ii !== 'undefined' && ii && ii.particleSystem) {
             clearInterval(checkInterval);
             initInteraction(ii);
-        } else if (++retries > 50) {
-            clearInterval(checkInterval);
         }
     }, CHECK_INTERVAL_MS);
 
