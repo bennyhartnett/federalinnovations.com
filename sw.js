@@ -12,7 +12,6 @@ const STATIC_ASSETS = [
     '/pages/home.html',
     '/pages/contact.html',
     '/pages/partners.html',
-    '/pages/past-performance.html',
     '/pages/software-engineering.html',
     '/pages/ai-systems.html',
     '/pages/technical-advisory.html',

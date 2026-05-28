@@ -25,12 +25,6 @@
       canonical: 'https://partners.federalinnovations.com/',
       ogUrl: 'https://partners.federalinnovations.com/'
     },
-    'pages/past-performance.html': {
-      title: 'Past Performance | Federal Innovations',
-      description: 'Federal Innovations - Our past performance and successful federal projects',
-      canonical: 'https://past-performance.federalinnovations.com/',
-      ogUrl: 'https://past-performance.federalinnovations.com/'
-    },
     'pages/software-engineering.html': {
       title: 'Software Engineering | Federal Innovations',
       description: 'Custom software engineering solutions for federal agencies and government contractors',

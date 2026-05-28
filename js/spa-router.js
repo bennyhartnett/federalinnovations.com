@@ -14,7 +14,6 @@
     'home':               'pages/home.html',
     'contact':            'pages/contact.html',
     'partners':           'pages/partners.html',
-    'past-performance':   'pages/past-performance.html',
     'software-engineering': 'pages/software-engineering.html',
     'ai-systems':         'pages/ai-systems.html',
     'technical-advisory': 'pages/technical-advisory.html',
