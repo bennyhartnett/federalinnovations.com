@@ -227,6 +227,50 @@ function shadeColor(color, percent) {
         return '#' + ((1 << 24) + (c.r << 16) + (c.g << 8) + c.b).toString(16).slice(1);
     }
 
+    function rgbToHsl(color) {
+        const r = color.r / 255;
+        const g = color.g / 255;
+        const b = color.b / 255;
+        const max = Math.max(r, g, b);
+        const min = Math.min(r, g, b);
+        const delta = max - min;
+        let hue = 0;
+
+        if (delta !== 0) {
+            if (max === r) {
+                hue = ((g - b) / delta) % 6;
+            } else if (max === g) {
+                hue = (b - r) / delta + 2;
+            } else {
+                hue = (r - g) / delta + 4;
+            }
+
+            hue /= 6;
+            if (hue < 0) hue += 1;
+        }
+
+        const lightness = (max + min) / 2;
+        const saturation = delta === 0
+            ? 0
+            : delta / (1 - Math.abs(2 * lightness - 1));
+
+        return { h: hue, s: saturation };
+    }
+
+    function syncBackgroundColor(color) {
+        if (typeof ii === 'undefined' || !ii || !ii.config) return;
+
+        const hsl = rgbToHsl(color);
+
+        // The WebGL shader previously ran its own lifetime hue cycle, so its
+        // particles did not match the accent palette shown on the Colors page.
+        ii.config.baseHue = hsl.h;
+        ii.config.saturation = hsl.s;
+        ii.config.hueRange = 0;
+        ii.config.colorMode = 'static';
+        ii.config.chromaticIntensity = 0;
+    }
+
     function animate() {
         colorProgress += transitionSpeed;
         if (colorProgress >= 1) {
@@ -243,6 +287,7 @@ function shadeColor(color, percent) {
         document.documentElement.style.setProperty('--dynamic-b', color.b);
         document.documentElement.style.setProperty('--dynamic-color-hex', hex);
 
+        syncBackgroundColor(color);
         updateFavicon(hex);
 
         requestAnimationFrame(animate);
