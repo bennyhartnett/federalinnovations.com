@@ -31,21 +31,39 @@
         color: #ffffff;
         margin-bottom: 4px;
     }
-    .live-swatch {
+    .spectrum-band {
         width: 100%;
-        height: 120px;
+        height: 88px;
         border-radius: 16px;
         position: relative;
         overflow: hidden;
-        transition: box-shadow 0.3s ease;
     }
-    .live-swatch::after {
+    .spectrum-band::after {
         content: '';
         position: absolute;
         inset: 0;
         border-radius: 16px;
         border: 1px solid rgba(255,255,255,0.1);
         pointer-events: none;
+    }
+    .spectrum-group + .spectrum-group {
+        margin-top: 24px;
+    }
+    .spectrum-title {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        margin-bottom: 10px;
+        color: #ffffff;
+        font-size: 0.875rem;
+        font-weight: 600;
+    }
+    .spectrum-range {
+        font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, monospace;
+        font-size: 0.75rem;
+        font-weight: 400;
+        color: #ffffff;
     }
     .copied-toast {
         position: fixed;
@@ -78,26 +96,35 @@
             <svg class="w-5 h-5 text-dynamic-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"/>
             </svg>
-            <span class="text-sm text-white font-medium tracking-wide uppercase">Brand Palette</span>
+            <span class="text-sm text-white font-medium tracking-wide uppercase">Shader Palette</span>
         </div>
         <h1 class="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight mb-6 reveal reveal-delay-1">
             <span class="gradient-text">Colors</span>
         </h1>
         <div class="w-24 h-1 glow-line shimmer-line mx-auto mb-8 rounded-full reveal reveal-delay-2"></div>
         <p class="text-lg md:text-xl text-white max-w-3xl mx-auto leading-relaxed reveal reveal-delay-2">
-            The primary colors cycling through the background right now.
+            The independent hue spectrum rendered by the particle background.
         </p>
     </div>
 
-    <!-- Live Current Color -->
+    <!-- Live shader ranges -->
     <div class="mb-16 reveal reveal-delay-1">
         <div class="p-8 bg-fi-gray/30 border border-white/5 rounded-2xl backdrop-blur-sm">
-            <h2 class="text-xl font-semibold text-white mb-2">Current Color</h2>
-            <p class="text-sm text-white mb-6">Interpolated live from the palette below</p>
-            <div id="live-color-swatch" class="live-swatch mb-4"></div>
-            <div class="flex items-center justify-between">
-                <span id="live-hex" class="color-label cursor-pointer hover:text-white transition-colors" title="Click to copy"></span>
-                <span id="live-rgb" class="color-label"></span>
+            <h2 class="text-xl font-semibold text-white mb-2">Live Shader Bands</h2>
+            <p class="text-sm text-white mb-6">Particles travel through a primary band plus a complementary band offset by 180°</p>
+            <div class="spectrum-group">
+                <div class="spectrum-title">
+                    <span>Primary lifetime band</span>
+                    <span id="primary-range" class="spectrum-range"></span>
+                </div>
+                <div id="primary-spectrum" class="spectrum-band"></div>
+            </div>
+            <div class="spectrum-group">
+                <div class="spectrum-title">
+                    <span>Complementary lifetime band</span>
+                    <span id="complementary-range" class="spectrum-range"></span>
+                </div>
+                <div id="complementary-spectrum" class="spectrum-band"></div>
             </div>
         </div>
     </div>
@@ -105,37 +132,10 @@
     <!-- Palette Colors -->
     <div class="mb-16 reveal reveal-delay-2">
         <div class="p-8 bg-fi-gray/30 border border-white/5 rounded-2xl backdrop-blur-sm">
-            <h2 class="text-xl font-semibold text-white mb-2">Palette</h2>
-            <p class="text-sm text-white mb-8">The background continuously cycles through these colors</p>
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-8" id="palette-grid">
-                <!-- Purple -->
-                <div class="text-center">
-                    <div class="color-swatch" style="background: #8b5cf6; box-shadow: 0 8px 32px rgba(139,92,246,0.3);" data-hex="#8b5cf6" title="Click to copy"></div>
-                    <div class="mt-4">
-                        <div class="color-name">Purple</div>
-                        <div class="color-label cursor-pointer hover:text-white transition-colors" data-hex="#8b5cf6" title="Click to copy">#8b5cf6</div>
-                        <div class="color-label">rgb(139, 92, 246)</div>
-                    </div>
-                </div>
-                <!-- Blue -->
-                <div class="text-center">
-                    <div class="color-swatch" style="background: #3b82f6; box-shadow: 0 8px 32px rgba(59,130,246,0.3);" data-hex="#3b82f6" title="Click to copy"></div>
-                    <div class="mt-4">
-                        <div class="color-name">Blue</div>
-                        <div class="color-label cursor-pointer hover:text-white transition-colors" data-hex="#3b82f6" title="Click to copy">#3b82f6</div>
-                        <div class="color-label">rgb(59, 130, 246)</div>
-                    </div>
-                </div>
-                <!-- Amber -->
-                <div class="text-center">
-                    <div class="color-swatch" style="background: #f59e0b; box-shadow: 0 8px 32px rgba(245,158,11,0.3);" data-hex="#f59e0b" title="Click to copy"></div>
-                    <div class="mt-4">
-                        <div class="color-name">Amber</div>
-                        <div class="color-label cursor-pointer hover:text-white transition-colors" data-hex="#f59e0b" title="Click to copy">#f59e0b</div>
-                        <div class="color-label">rgb(245, 158, 11)</div>
-                    </div>
-                </div>
-            </div>
+            <h2 class="text-xl font-semibold text-white mb-2">Sampled Colors</h2>
+            <p class="text-sm text-white mb-3">Six normalized samples generated from the background shader settings</p>
+            <p class="text-xs text-white mb-8">The hex values preserve the shader's exact hue and saturation at 50% lightness. Particle brightness varies with velocity, trails, and bloom.</p>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-8" id="palette-grid"></div>
         </div>
     </div>
 </div>
@@ -147,39 +147,110 @@
 (function() {
     'use strict';
 
-    var liveSwatch = document.getElementById('live-color-swatch');
-    var liveHex = document.getElementById('live-hex');
-    var liveRgb = document.getElementById('live-rgb');
+    var paletteGrid = document.getElementById('palette-grid');
+    var primarySpectrum = document.getElementById('primary-spectrum');
+    var complementarySpectrum = document.getElementById('complementary-spectrum');
+    var primaryRange = document.getElementById('primary-range');
+    var complementaryRange = document.getElementById('complementary-range');
     var toast = document.getElementById('copied-toast');
     var toastTimer;
 
-    function toHex(r, g, b) {
-        return '#' + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+    function hueToRgb(p, q, t) {
+        if (t < 0) t += 1;
+        if (t > 1) t -= 1;
+        if (t < 1 / 6) return p + (q - p) * 6 * t;
+        if (t < 1 / 2) return q;
+        if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
+        return p;
     }
 
-    function updateLiveColor() {
-        var style = getComputedStyle(document.documentElement);
-        var r = parseInt(style.getPropertyValue('--dynamic-r')) || 0;
-        var g = parseInt(style.getPropertyValue('--dynamic-g')) || 0;
-        var b = parseInt(style.getPropertyValue('--dynamic-b')) || 0;
-        var hex = toHex(r, g, b);
+    function hslToRgb(h, s, l) {
+        var r;
+        var g;
+        var b;
 
-        if (liveSwatch) {
-            liveSwatch.style.background = hex;
-            liveSwatch.style.boxShadow = '0 8px 32px rgba(' + r + ',' + g + ',' + b + ',0.35)';
-        }
-        if (liveHex) {
-            liveHex.textContent = hex;
-            liveHex.setAttribute('data-hex', hex);
-        }
-        if (liveRgb) {
-            liveRgb.textContent = 'rgb(' + r + ', ' + g + ', ' + b + ')';
+        if (s === 0) {
+            r = g = b = l;
+        } else {
+            var q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+            var p = 2 * l - q;
+            r = hueToRgb(p, q, h + 1 / 3);
+            g = hueToRgb(p, q, h);
+            b = hueToRgb(p, q, h - 1 / 3);
         }
 
-        requestAnimationFrame(updateLiveColor);
+        return {
+            r: Math.round(r * 255),
+            g: Math.round(g * 255),
+            b: Math.round(b * 255)
+        };
     }
 
-    requestAnimationFrame(updateLiveColor);
+    function toHex(rgb) {
+        return '#' + ((1 << 24) + (rgb.r << 16) + (rgb.g << 8) + rgb.b).toString(16).slice(1);
+    }
+
+    function getShaderConfig() {
+        if (typeof ii !== 'undefined' && ii && ii.config) {
+            return ii.config;
+        }
+
+        return {
+            baseHue: 0.6,
+            hueRange: 0.08,
+            saturation: 0.7
+        };
+    }
+
+    function createSample(name, band, hue, saturation) {
+        var normalizedHue = ((hue % 1) + 1) % 1;
+        var rgb = hslToRgb(normalizedHue, saturation, 0.5);
+
+        return {
+            name: name,
+            band: band,
+            hue: normalizedHue,
+            degrees: Math.round(normalizedHue * 3600) / 10,
+            rgb: rgb,
+            hex: toHex(rgb)
+        };
+    }
+
+    function renderShaderPalette() {
+        var config = getShaderConfig();
+        var stops = [0, 0.5, 1];
+        var primaryNames = ['Blue', 'Cobalt', 'Indigo'];
+        var complementaryNames = ['Amber', 'Gold', 'Lime'];
+        var primary = stops.map(function(stop, index) {
+            return createSample(primaryNames[index], 'Primary', config.baseHue + config.hueRange * stop, config.saturation);
+        });
+        var complementary = stops.map(function(stop, index) {
+            return createSample(complementaryNames[index], 'Complementary', config.baseHue + config.hueRange * stop + 0.5, config.saturation);
+        });
+        var samples = primary.concat(complementary);
+
+        primarySpectrum.style.background = 'linear-gradient(90deg, ' + primary.map(function(sample) { return sample.hex; }).join(', ') + ')';
+        complementarySpectrum.style.background = 'linear-gradient(90deg, ' + complementary.map(function(sample) { return sample.hex; }).join(', ') + ')';
+        primarySpectrum.style.boxShadow = '0 8px 32px rgba(' + primary[1].rgb.r + ',' + primary[1].rgb.g + ',' + primary[1].rgb.b + ',0.3)';
+        complementarySpectrum.style.boxShadow = '0 8px 32px rgba(' + complementary[1].rgb.r + ',' + complementary[1].rgb.g + ',' + complementary[1].rgb.b + ',0.3)';
+        primaryRange.textContent = primary[0].degrees + '\u00b0\u2013' + primary[2].degrees + '\u00b0';
+        complementaryRange.textContent = complementary[0].degrees + '\u00b0\u2013' + complementary[2].degrees + '\u00b0';
+
+        paletteGrid.innerHTML = samples.map(function(sample) {
+            var shadow = 'rgba(' + sample.rgb.r + ',' + sample.rgb.g + ',' + sample.rgb.b + ',0.3)';
+            return '<div class="text-center">' +
+                '<div class="color-swatch" style="background:' + sample.hex + ';box-shadow:0 8px 32px ' + shadow + ';" data-hex="' + sample.hex + '" title="Click to copy"></div>' +
+                '<div class="mt-4">' +
+                    '<div class="color-name">' + sample.name + '</div>' +
+                    '<div class="color-label">' + sample.band + ' \u00b7 ' + sample.degrees + '\u00b0</div>' +
+                    '<div class="color-label cursor-pointer hover:text-white transition-colors" data-hex="' + sample.hex + '" title="Click to copy">' + sample.hex + '</div>' +
+                    '<div class="color-label">rgb(' + sample.rgb.r + ', ' + sample.rgb.g + ', ' + sample.rgb.b + ')</div>' +
+                '</div>' +
+            '</div>';
+        }).join('');
+    }
+
+    renderShaderPalette();
 
     function showToast(text) {
         toast.textContent = text;
@@ -199,7 +270,7 @@
     }
 
     // Click-to-copy on swatches and hex labels
-    document.querySelectorAll('.color-swatch[data-hex], .color-label[data-hex], #live-hex').forEach(function(el) {
+    document.querySelectorAll('.color-swatch[data-hex], .color-label[data-hex]').forEach(function(el) {
         el.addEventListener('click', function() {
             var hex = el.getAttribute('data-hex');
             if (hex) copyHex(hex);
