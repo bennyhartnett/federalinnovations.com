@@ -31,6 +31,10 @@
         color: #ffffff;
         margin-bottom: 4px;
     }
+    .coverage-label {
+        font-size: 0.75rem;
+        margin-top: 8px;
+    }
     .spectrum-band {
         width: 100%;
         height: 104px;
@@ -122,7 +126,7 @@
         <div class="p-8 bg-fi-gray/30 border border-white/5 rounded-2xl backdrop-blur-sm">
             <h2 class="text-xl font-semibold text-white mb-2">Observed Output Colors</h2>
             <p class="text-sm text-white mb-3">Twelve representative hues extracted directly from rendered canvas pixels</p>
-            <p class="text-xs text-white mb-8">Values refresh from the live output. Individual particles vary in brightness as they move and overlap.</p>
+            <p class="text-xs text-white mb-8">Percentages show each hue's average share of the visible page background across 120 rendered frames.</p>
             <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-8" id="palette-grid"></div>
         </div>
     </div>
@@ -185,6 +189,12 @@
         return hue < 0 ? hue + 1 : hue;
     }
 
+    function formatPercent(value) {
+        if (typeof value !== 'number') return null;
+        if (value > 0 && value < 0.01) return '<0.01';
+        return value.toFixed(2);
+    }
+
     function renderPalette(samples, status) {
         var gradientColors = samples.map(function(sample) { return sample.hex; });
         gradientColors.push(samples[0].hex);
@@ -195,12 +205,17 @@
         paletteGrid.innerHTML = samples.map(function(sample) {
             var rgb = sample.rgb || fromHex(sample.hex);
             var shadow = 'rgba(' + rgb.r + ',' + rgb.g + ',' + rgb.b + ',0.3)';
+            var coverage = formatPercent(sample.coverage);
+            var coverageLabel = coverage === null
+                ? 'Sampling coverage…'
+                : coverage + '% of page background';
             return '<div class="text-center">' +
                 '<div class="color-swatch" style="background:' + sample.hex + ';box-shadow:0 8px 32px ' + shadow + ';" data-hex="' + sample.hex + '" title="Click to copy"></div>' +
                 '<div class="mt-4">' +
                     '<div class="color-name">' + sample.name + '</div>' +
                     '<div class="color-label cursor-pointer hover:text-white transition-colors" data-hex="' + sample.hex + '" title="Click to copy">' + sample.hex + '</div>' +
                     '<div class="color-label">rgb(' + rgb.r + ', ' + rgb.g + ', ' + rgb.b + ')</div>' +
+                    '<div class="color-label coverage-label">' + coverageLabel + '</div>' +
                 '</div>' +
             '</div>';
         }).join('');
@@ -215,10 +230,11 @@
         sampleCanvas.height = 41;
         var context = sampleCanvas.getContext('2d', { willReadFrequently: true });
         var bins = observedFallbacks.map(function() {
-            return { r2: 0, g2: 0, b2: 0, count: 0 };
+            return { r2: 0, g2: 0, b2: 0, count: 0, coverageCount: 0 };
         });
         var frame = 0;
         var targetFrames = 120;
+        var sampledPixelTotal = 0;
 
         function collectFrame() {
             requestAnimationFrame(function() {
@@ -227,6 +243,7 @@
                 try {
                     context.drawImage(source, 0, 0, sampleCanvas.width, sampleCanvas.height);
                     var pixels = context.getImageData(0, 0, sampleCanvas.width, sampleCanvas.height).data;
+                    sampledPixelTotal += pixels.length / 4;
 
                     for (var i = 0; i < pixels.length; i += 4) {
                         var r = pixels[i];
@@ -237,12 +254,21 @@
                         var delta = max - min;
                         var saturation = max === 0 ? 0 : delta / max;
                         var value = max / 255;
+                        var hue;
+                        var binIndex;
+                        var bin;
+
+                        if (saturation >= 0.35 && value >= 0.04) {
+                            hue = getHue(r, g, b, max, delta);
+                            binIndex = Math.floor(hue * 12 + 0.5) % 12;
+                            bins[binIndex].coverageCount += 1;
+                        }
 
                         if (saturation < 0.5 || value < 0.5) continue;
 
-                        var hue = getHue(r, g, b, max, delta);
-                        var binIndex = Math.floor(hue * 12 + 0.5) % 12;
-                        var bin = bins[binIndex];
+                        hue = getHue(r, g, b, max, delta);
+                        binIndex = Math.floor(hue * 12 + 0.5) % 12;
+                        bin = bins[binIndex];
                         bin.r2 += r * r;
                         bin.g2 += g * g;
                         bin.b2 += b * b;
@@ -261,7 +287,14 @@
 
                 var samples = observedFallbacks.map(function(fallback, index) {
                     var bin = bins[index];
-                    if (bin.count < 8) return fallback;
+                    var coverage = sampledPixelTotal === 0 ? 0 : (bin.coverageCount / sampledPixelTotal) * 100;
+                    if (bin.count < 8) {
+                        return {
+                            name: fallback.name,
+                            hex: fallback.hex,
+                            coverage: coverage
+                        };
+                    }
 
                     var rgb = {
                         r: Math.round(Math.sqrt(bin.r2 / bin.count)),
@@ -272,11 +305,16 @@
                     return {
                         name: fallback.name,
                         rgb: rgb,
-                        hex: toHex(rgb)
+                        hex: toHex(rgb),
+                        coverage: coverage
                     };
                 });
 
-                renderPalette(samples, 'Live sample · ' + frame + ' frames');
+                var coloredPixelTotal = bins.reduce(function(total, bin) {
+                    return total + bin.coverageCount;
+                }, 0);
+                var totalCoverage = sampledPixelTotal === 0 ? 0 : (coloredPixelTotal / sampledPixelTotal) * 100;
+                renderPalette(samples, 'Live sample · ' + frame + ' frames · ' + formatPercent(totalCoverage) + '% colored');
                 setTimeout(sampleRenderedCanvas, 12000);
             });
         }
